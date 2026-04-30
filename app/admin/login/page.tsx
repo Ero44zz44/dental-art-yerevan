@@ -19,7 +19,7 @@ export default function AdminLogin() {
     const { error: authError } = await supabase.auth.signInWithPassword({ email, password })
     setLoading(false)
     if (authError) {
-      setError('Sekhalt email kam gakhtnabark. Krknek knov.')
+      setError('Incorrect email or password. Please try again.')
       return
     }
     router.push('/admin/dashboard')
@@ -43,7 +43,6 @@ export default function AdminLogin() {
         width: '100%',
         maxWidth: '400px',
       }}>
-        {/* Logo */}
         <div style={{ textAlign: 'center', marginBottom: '32px' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, marginBottom: 8 }}>
             <svg width="28" height="28" viewBox="0 0 32 32" fill="none" style={{ color: 'var(--accent)' }}>
@@ -53,12 +52,12 @@ export default function AdminLogin() {
             <span style={{ fontFamily: 'var(--font-brand)', fontSize: '20px', color: 'var(--primary)' }}>Dental Art</span>
           </div>
           <h1 style={{ fontSize: '22px', fontFamily: 'var(--font-heading-hy)', color: 'var(--primary)', marginBottom: 4 }}>Admin Panel</h1>
-          <p style={{ fontSize: '14px', color: 'var(--text-light)' }}>Grancvel dzer hashordutyamb</p>
+          <p style={{ fontSize: '14px', color: 'var(--text-light)' }}>Sign in to your account</p>
         </div>
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label htmlFor="email">El. posti hastsé</label>
+            <label htmlFor="email">Email address</label>
             <input
               id="email" type="email" autoComplete="email"
               value={email} onChange={e => setEmail(e.target.value)}
@@ -66,7 +65,7 @@ export default function AdminLogin() {
             />
           </div>
           <div className="form-group">
-            <label htmlFor="password">Gakhtnabark</label>
+            <label htmlFor="password">Password</label>
             <input
               id="password" type="password" autoComplete="current-password"
               value={password} onChange={e => setPassword(e.target.value)}
@@ -83,8 +82,13 @@ export default function AdminLogin() {
             </div>
           )}
 
-          <button type="submit" className="btn btn-primary" style={{ width: '100%', justifyContent: 'center', marginTop: 8 }} disabled={loading}>
-            {loading ? 'Barkvel e...' : 'Muts'}
+          <button
+            type="submit"
+            className="btn btn-primary"
+            style={{ width: '100%', justifyContent: 'center', marginTop: 8 }}
+            disabled={loading}
+          >
+            {loading ? 'Signing in…' : 'Sign In'}
           </button>
         </form>
       </div>
