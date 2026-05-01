@@ -110,6 +110,18 @@ export const T = {
       summaryDate:    'Ամսաթիվ',
       summaryTime:    'Ժամ',
       summaryEmail:   'Էլ. փոստ',
+      minLabel:       'ր.',
+      dayNames:       ['Կ', 'Բ', 'Գ', 'Դ', 'Հ', 'Ուր', 'Շ'],
+      svcNameMap: {
+        'Teeth Cleaning':      'Ատամների մաքրում',
+        'Consultation':        'Խորհրդատվություն',
+        'Implant Installation':'Ատամնային իմպլանտ',
+      } as Record<string, string>,
+      svcDescMap: {
+        'Teeth Cleaning':      'Պրոֆեսիոնալ մաքրում՝ բերանի խոռոչի առողջության պահպանման և լնդերի հիվանդության կանխարգելման համար:',
+        'Consultation':        'Անվճար սկզբնական խորհրդատվություն ձեր ատամների վիճակի վերաբերյալ:',
+        'Implant Installation':'Ատամի մշտական փոխարինում, որ արտաքուստ և գործառույթով նման է բնական ատամին:',
+      } as Record<string, string>,
     },
   },
 
@@ -222,6 +234,18 @@ export const T = {
       summaryDate:    'Date',
       summaryTime:    'Time',
       summaryEmail:   'Email',
+      minLabel:       'min',
+      dayNames:       ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
+      svcNameMap: {
+        'Teeth Cleaning':      'Teeth Cleaning',
+        'Consultation':        'Consultation',
+        'Implant Installation':'Implant Installation',
+      } as Record<string, string>,
+      svcDescMap: {
+        'Teeth Cleaning':      'Professional cleaning to maintain oral health and prevent gum disease.',
+        'Consultation':        'Free initial consultation about your dental condition.',
+        'Implant Installation':'Permanent tooth replacement that looks and functions like a natural tooth.',
+      } as Record<string, string>,
     },
   },
 
@@ -334,6 +358,18 @@ export const T = {
       summaryDate:    'Дата',
       summaryTime:    'Время',
       summaryEmail:   'Эл. почта',
+      minLabel:       'мин',
+      dayNames:       ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
+      svcNameMap: {
+        'Teeth Cleaning':      'Чистка зубов',
+        'Consultation':        'Консультация',
+        'Implant Installation':'Имплантация зуба',
+      } as Record<string, string>,
+      svcDescMap: {
+        'Teeth Cleaning':      'Профессиональная чистка для поддержания здоровья полости рта и профилактики заболеваний дёсен.',
+        'Consultation':        'Бесплатная первичная консультация о состоянии ваших зубов.',
+        'Implant Installation':'Постоянная замена зуба, неотличимая по виду и функции от натурального.',
+      } as Record<string, string>,
     },
   },
 }

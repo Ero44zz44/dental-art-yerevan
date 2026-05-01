@@ -9,6 +9,7 @@ import {
   startOfMonth, getDay, isSameDay, addMonths, subMonths,
   isBefore, startOfDay,
 } from 'date-fns'
+import { hy as hyLocale, ru as ruLocale, enUS } from 'date-fns/locale'
 
 type Step = 1 | 2 | 3 | 4 | 5 | 6
 
@@ -41,8 +42,9 @@ const S = {
 }
 
 export default function BookingWidget() {
-  const { t } = useTranslation()
+  const { t, lang } = useTranslation()
   const b = t.booking
+  const dateLocale = lang === 'hy' ? hyLocale : lang === 'ru' ? ruLocale : enUS
 
   const [step,      setStep]      = useState<Step>(1)
   const [state,     setState]     = useState<BookingState>(INITIAL)
@@ -186,12 +188,12 @@ export default function BookingWidget() {
                     </svg>
                   </div>
                   <span className="text-[13px] font-bold text-[#C9A96E] bg-[rgba(201,169,110,.1)] px-2 py-0.5 rounded-md shrink-0">
-                    {svc.duration_minutes} min
+                    {svc.duration_minutes} {b.minLabel}
                   </span>
                 </div>
                 <div>
-                  <h3 className="text-[16px] font-bold text-[#1B3A4B]">{svc.name}</h3>
-                  <p className="text-[13px] text-[#5a6475] mt-1 leading-relaxed">{svc.description}</p>
+                  <h3 className="text-[16px] font-bold text-[#1B3A4B]">{b.svcNameMap[svc.name] ?? svc.name}</h3>
+                  <p className="text-[13px] text-[#5a6475] mt-1 leading-relaxed">{b.svcDescMap[svc.name] ?? svc.description ?? ''}</p>
                 </div>
                 <div className="text-[15px] font-bold text-[#1B3A4B] mt-auto">
                   {svc.price.toLocaleString()} AMD
@@ -225,7 +227,6 @@ export default function BookingWidget() {
                 </div>
                 <div className="text-center">
                   <h3 className="text-[16px] font-bold text-[#1B3A4B]">{s.name}</h3>
-                  {s.bio && <p className="text-[13px] text-[#5a6475] mt-1 leading-relaxed line-clamp-2">{s.bio}</p>}
                 </div>
               </button>
             ))}
@@ -248,7 +249,7 @@ export default function BookingWidget() {
                 disabled={isBefore(startOfMonth(subMonths(calMonth, 1)), startOfMonth(new Date()))}
               >‹</button>
               <span className="font-bold text-[#1B3A4B] text-[15px]">
-                {format(calMonth, 'MMMM yyyy')}
+                {format(calMonth, 'MMMM yyyy', { locale: dateLocale })}
               </span>
               <button
                 className="w-9 h-9 rounded-full border border-[#e2e0da] flex items-center justify-center hover:border-[#C9A96E] hover:text-[#C9A96E] transition-all"
@@ -257,8 +258,8 @@ export default function BookingWidget() {
             </div>
 
             <div className="grid grid-cols-7 gap-1 mb-1">
-              {['Su','Mo','Tu','We','Th','Fr','Sa'].map(d => (
-                <div key={d} className="text-center text-[11px] font-bold text-[#5a6475] py-1">{d}</div>
+              {b.dayNames.map((d, i) => (
+                <div key={i} className="text-center text-[11px] font-bold text-[#5a6475] py-1">{d}</div>
               ))}
             </div>
 
@@ -283,7 +284,7 @@ export default function BookingWidget() {
         <div>
           <h2 className={S.stepHeading}>{b.step4Heading}</h2>
           <p className={S.stepSub}>
-            {format(state.date, 'EEEE, d MMMM yyyy')} — {state.service?.name}
+            {format(state.date, 'EEEE, d MMMM yyyy', { locale: dateLocale })} — {b.svcNameMap[state.service?.name ?? ''] ?? state.service?.name}
           </p>
 
           {loading ? (
@@ -321,8 +322,8 @@ export default function BookingWidget() {
         <div>
           <h2 className={S.stepHeading}>{b.step5Heading}</h2>
           <p className={S.stepSub}>
-            {state.service?.name} · {state.staff?.name} ·{' '}
-            {state.date && format(state.date, 'd MMM')} ·{' '}
+            {b.svcNameMap[state.service?.name ?? ''] ?? state.service?.name} · {state.staff?.name} ·{' '}
+            {state.date && format(state.date, 'd MMM', { locale: dateLocale })} ·{' '}
             {state.slot && format(parseISO(state.slot), 'HH:mm')}
           </p>
 
@@ -403,9 +404,9 @@ export default function BookingWidget() {
           <div className="bg-[#F0EFEB] rounded-[12px] p-6 text-left mb-8 max-w-sm mx-auto">
             <div className="space-y-3">
               {[
-                [b.summaryService, state.service?.name],
+                [b.summaryService, b.svcNameMap[state.service?.name ?? ''] ?? state.service?.name],
                 [b.summaryDoctor,  state.staff?.name],
-                [b.summaryDate,    state.date ? format(state.date, 'd MMMM yyyy') : ''],
+                [b.summaryDate,    state.date ? format(state.date, 'd MMMM yyyy', { locale: dateLocale }) : ''],
                 [b.summaryTime,    state.slot ? format(parseISO(state.slot), 'HH:mm') : ''],
                 [b.summaryEmail,   state.email],
               ].map(([label, value]) => (

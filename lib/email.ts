@@ -17,6 +17,14 @@ function formatTime(iso: string) {
   return new Date(iso).toLocaleTimeString('hy-AM', { hour: '2-digit', minute: '2-digit' })
 }
 
+function row(label: string, value: string) {
+  return `
+    <tr>
+      <td style="padding:10px 16px 10px 0;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#C9A96E;white-space:nowrap;vertical-align:top;border-bottom:1px solid #e8e5de;">${label}</td>
+      <td style="padding:10px 0;font-size:15px;color:#1A1A1A;font-weight:600;vertical-align:top;border-bottom:1px solid #e8e5de;">${value}</td>
+    </tr>`
+}
+
 export async function sendCustomerConfirmation(
   booking: Booking,
   staff: Staff,
@@ -29,64 +37,79 @@ export async function sendCustomerConfirmation(
     from: `${BUSINESS.name} <${FROM()}>`,
     to: booking.customer_email,
     subject: `Ձեր ժամադրությունը հաստատված է — ${date}`,
-    html: `
-<!DOCTYPE html>
-<html>
+    html: `<!DOCTYPE html>
+<html lang="hy">
 <head>
   <meta charset="UTF-8">
-  <style>
-    body { font-family: 'Noto Sans Armenian', Arial, sans-serif; background: #FAFAF7; margin: 0; padding: 0; }
-    .wrapper { max-width: 560px; margin: 0 auto; padding: 40px 20px; }
-    .card { background: #fff; border-radius: 12px; padding: 40px; box-shadow: 0 2px 16px rgba(0,0,0,.08); }
-    .logo { font-family: Georgia, serif; font-size: 22px; color: #1B3A4B; margin-bottom: 24px; }
-    .check { width: 56px; height: 56px; background: rgba(201,169,110,.12); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; }
-    h1 { color: #1B3A4B; font-size: 22px; margin: 0 0 8px; text-align: center; }
-    .sub { color: #5a6475; font-size: 15px; text-align: center; margin-bottom: 32px; }
-    .detail-row { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid #e2e0da; }
-    .detail-row:last-child { border-bottom: none; margin-bottom: 0; }
-    .detail-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: #C9A96E; width: 120px; flex-shrink: 0; margin-top: 2px; }
-    .detail-value { font-size: 15px; color: #1A1A1A; font-weight: 600; }
-    .footer { text-align: center; margin-top: 32px; font-size: 13px; color: #5a6475; }
-    .footer a { color: #C9A96E; }
-  </style>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Ժամադրության հաստատում</title>
 </head>
-<body>
-  <div class="wrapper">
-    <div class="card">
-      <div class="logo">🦷 ${BUSINESS.name}</div>
-      <h1>Ձեր ժամադրությունը հաստատված է!</h1>
-      <p class="sub">Մենք սպասում ենք ձեզ:</p>
+<body style="margin:0;padding:0;background:#F5F4F0;font-family:Arial,Helvetica,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#F5F4F0;padding:40px 16px;">
+    <tr>
+      <td align="center">
+        <table width="560" cellpadding="0" cellspacing="0" style="max-width:560px;width:100%;">
 
-      <div class="detail-row">
-        <div class="detail-label">Ծառայություն</div>
-        <div class="detail-value">${service.name}</div>
-      </div>
-      <div class="detail-row">
-        <div class="detail-label">Բժիշկ</div>
-        <div class="detail-value">${staff.name}</div>
-      </div>
-      <div class="detail-row">
-        <div class="detail-label">Ամսաթիվ</div>
-        <div class="detail-value">${date}</div>
-      </div>
-      <div class="detail-row">
-        <div class="detail-label">Ժամ</div>
-        <div class="detail-value">${time}</div>
-      </div>
-      <div class="detail-row">
-        <div class="detail-label">Տևողություն</div>
-        <div class="detail-value">${service.duration_minutes} min</div>
-      </div>
+          <!-- Logo header -->
+          <tr>
+            <td align="center" style="padding-bottom:24px;">
+              <span style="font-family:Georgia,serif;font-size:22px;font-weight:700;color:#1B3A4B;">🦷 ${BUSINESS.name}</span>
+            </td>
+          </tr>
 
-      <div class="footer">
-        <p>Եթե կարիք ունեք, զանգահարեք <a href="${BUSINESS.phoneHref}">${BUSINESS.phone}</a></p>
-        <p>${BUSINESS.addressArm}</p>
-      </div>
-    </div>
-  </div>
+          <!-- Card -->
+          <tr>
+            <td style="background:#ffffff;border-radius:12px;padding:40px 36px;border:1px solid #e8e5de;">
+
+              <!-- Success icon -->
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td align="center" style="padding-bottom:20px;">
+                    <table cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td style="width:56px;height:56px;background:#fdf6ec;border-radius:50%;text-align:center;vertical-align:middle;font-size:28px;">✓</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                <tr>
+                  <td align="center" style="padding-bottom:6px;">
+                    <span style="font-size:22px;font-weight:700;color:#1B3A4B;">Ձեր ժամադրությունը հաստատված է!</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td align="center" style="padding-bottom:32px;">
+                    <span style="font-size:15px;color:#5a6475;">Մենք սպասում ենք ձեզ:</span>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Details table -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="border-top:1px solid #e8e5de;">
+                ${row('Ծառայություն', service.name)}
+                ${row('Բժիշկ', staff.name)}
+                ${row('Ամսաթիվ', date)}
+                ${row('Ժամ', time)}
+                ${row('Տևողություն', `${service.duration_minutes} ր.`)}
+              </table>
+
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td align="center" style="padding-top:24px;font-size:13px;color:#5a6475;line-height:1.6;">
+              <p style="margin:0 0 4px;">Հարցերի դեպքում զանգահարեք <a href="${BUSINESS.phoneHref}" style="color:#C9A96E;text-decoration:none;">${BUSINESS.phone}</a></p>
+              <p style="margin:0;">${BUSINESS.addressArm}</p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
 </body>
-</html>
-    `,
+</html>`,
   })
 }
 
@@ -101,40 +124,62 @@ export async function sendStaffNotification(
   await getResend().emails.send({
     from: `${BUSINESS.name} <${FROM()}>`,
     to: staff.email,
-    subject: `Նոր ժամադրություն — ${booking.customer_name} | ${date} ${time}`,
-    html: `
-<!DOCTYPE html>
-<html>
+    subject: `New Appointment — ${booking.customer_name} | ${date} ${time}`,
+    html: `<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <style>
-    body { font-family: Arial, sans-serif; background: #f5f5f5; margin: 0; padding: 0; }
-    .wrapper { max-width: 520px; margin: 0 auto; padding: 32px 16px; }
-    .card { background: #fff; border-radius: 10px; padding: 32px; }
-    h2 { color: #1B3A4B; margin: 0 0 24px; }
-    table { width: 100%; border-collapse: collapse; }
-    td { padding: 10px 0; border-bottom: 1px solid #e2e0da; font-size: 14px; vertical-align: top; }
-    td:first-child { color: #5a6475; width: 140px; font-weight: 600; }
-    td:last-child { color: #1A1A1A; }
-  </style>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>New Appointment</title>
 </head>
-<body>
-  <div class="wrapper">
-    <div class="card">
-      <h2>🦷 New Appointment</h2>
-      <table>
-        <tr><td>Patient</td><td>${booking.customer_name}</td></tr>
-        <tr><td>Phone</td><td><a href="tel:${booking.customer_phone}">${booking.customer_phone}</a></td></tr>
-        <tr><td>Email</td><td>${booking.customer_email}</td></tr>
-        <tr><td>Service</td><td>${service.name} (${service.duration_minutes} min)</td></tr>
-        <tr><td>Date</td><td>${date}</td></tr>
-        <tr><td>Time</td><td>${time}</td></tr>
-        ${booking.notes ? `<tr><td>Notes</td><td>${booking.notes}</td></tr>` : ''}
-      </table>
-    </div>
-  </div>
+<body style="margin:0;padding:0;background:#f5f5f5;font-family:Arial,Helvetica,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f5f5;padding:32px 16px;">
+    <tr>
+      <td align="center">
+        <table width="520" cellpadding="0" cellspacing="0" style="max-width:520px;width:100%;">
+
+          <tr>
+            <td style="background:#ffffff;border-radius:10px;padding:32px;border:1px solid #e2e0da;">
+              <p style="margin:0 0 20px;font-size:20px;font-weight:700;color:#1B3A4B;">🦷 New Appointment</p>
+              <table width="100%" cellpadding="0" cellspacing="0" style="border-top:1px solid #e2e0da;">
+                <tr>
+                  <td style="padding:10px 16px 10px 0;font-size:13px;font-weight:700;color:#5a6475;white-space:nowrap;vertical-align:top;border-bottom:1px solid #e2e0da;width:130px;">Patient</td>
+                  <td style="padding:10px 0;font-size:14px;color:#1A1A1A;vertical-align:top;border-bottom:1px solid #e2e0da;">${booking.customer_name}</td>
+                </tr>
+                <tr>
+                  <td style="padding:10px 16px 10px 0;font-size:13px;font-weight:700;color:#5a6475;white-space:nowrap;vertical-align:top;border-bottom:1px solid #e2e0da;">Phone</td>
+                  <td style="padding:10px 0;font-size:14px;color:#1A1A1A;vertical-align:top;border-bottom:1px solid #e2e0da;"><a href="tel:${booking.customer_phone}" style="color:#C9A96E;text-decoration:none;">${booking.customer_phone}</a></td>
+                </tr>
+                <tr>
+                  <td style="padding:10px 16px 10px 0;font-size:13px;font-weight:700;color:#5a6475;white-space:nowrap;vertical-align:top;border-bottom:1px solid #e2e0da;">Email</td>
+                  <td style="padding:10px 0;font-size:14px;color:#1A1A1A;vertical-align:top;border-bottom:1px solid #e2e0da;">${booking.customer_email}</td>
+                </tr>
+                <tr>
+                  <td style="padding:10px 16px 10px 0;font-size:13px;font-weight:700;color:#5a6475;white-space:nowrap;vertical-align:top;border-bottom:1px solid #e2e0da;">Service</td>
+                  <td style="padding:10px 0;font-size:14px;color:#1A1A1A;vertical-align:top;border-bottom:1px solid #e2e0da;">${service.name} (${service.duration_minutes} min)</td>
+                </tr>
+                <tr>
+                  <td style="padding:10px 16px 10px 0;font-size:13px;font-weight:700;color:#5a6475;white-space:nowrap;vertical-align:top;border-bottom:1px solid #e2e0da;">Date</td>
+                  <td style="padding:10px 0;font-size:14px;color:#1A1A1A;vertical-align:top;border-bottom:1px solid #e2e0da;">${date}</td>
+                </tr>
+                <tr>
+                  <td style="padding:10px 16px 10px 0;font-size:13px;font-weight:700;color:#5a6475;white-space:nowrap;vertical-align:top;${booking.notes ? 'border-bottom:1px solid #e2e0da;' : ''}">Time</td>
+                  <td style="padding:10px 0;font-size:14px;color:#1A1A1A;vertical-align:top;${booking.notes ? 'border-bottom:1px solid #e2e0da;' : ''}">${time}</td>
+                </tr>
+                ${booking.notes ? `
+                <tr>
+                  <td style="padding:10px 16px 10px 0;font-size:13px;font-weight:700;color:#5a6475;white-space:nowrap;vertical-align:top;">Notes</td>
+                  <td style="padding:10px 0;font-size:14px;color:#1A1A1A;vertical-align:top;">${booking.notes}</td>
+                </tr>` : ''}
+              </table>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
 </body>
-</html>
-    `,
+</html>`,
   })
 }
