@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerClient } from '@/lib/supabase-server'
-import { parseISO, format, addMinutes, isAfter } from 'date-fns'
+import { addMinutes, isAfter } from 'date-fns'
+import { TZ_OFFSET } from '@/lib/config'
 
 export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl
@@ -26,8 +27,9 @@ export async function GET(req: NextRequest) {
   const duration = service.duration_minutes
 
   // 2. Get working hours for this staff on this day of week
-  const date    = parseISO(dateStr)
-  const dow     = date.getDay() // 0=Sunday
+  // Parse date in Armenia local time to get the correct day-of-week
+  const date = new Date(`${dateStr}T00:00:00${TZ_OFFSET}`)
+  const dow  = date.getUTCDay() // use UTC since we constructed with explicit offset
   const { data: wh } = await supabase
     .from('working_hours')
     .select('*')
@@ -59,15 +61,14 @@ export async function GET(req: NextRequest) {
     .gte('start_time', dayStart)
     .lte('start_time', dayEnd)
 
-  // 5. Generate slots
-  const [startH, startM] = wh.start_time.split(':').map(Number)
-  const [endH, endM]     = wh.end_time.split(':').map(Number)
+  // 5. Generate slots in Armenia local time (working hours are local time)
+  // e.g. "09:00:00" Armenia = 05:00 UTC — build with explicit offset so
+  // the resulting Date is a correct UTC timestamp regardless of server timezone
+  const startTimeStr = wh.start_time.substring(0, 5) // "09:00"
+  const endTimeStr   = wh.end_time.substring(0, 5)   // "18:00"
 
-  const workStart = new Date(date)
-  workStart.setHours(startH, startM, 0, 0)
-
-  const workEnd = new Date(date)
-  workEnd.setHours(endH, endM, 0, 0)
+  const workStart = new Date(`${dateStr}T${startTimeStr}:00${TZ_OFFSET}`)
+  const workEnd   = new Date(`${dateStr}T${endTimeStr}:00${TZ_OFFSET}`)
 
   const now = new Date()
   const slots: string[] = []
@@ -92,7 +93,8 @@ export async function GET(req: NextRequest) {
     })
 
     if (!overlaps) {
-      slots.push(format(cursor, "yyyy-MM-dd'T'HH:mm:ss"))
+      // Return as UTC ISO so the browser displays it in local time correctly
+      slots.push(cursor.toISOString())
     }
 
     cursor = addMinutes(cursor, duration)

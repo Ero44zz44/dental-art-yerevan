@@ -16,3 +16,6 @@ export const COLORS = {
   primary: '#1B3A4B',
   accent:  '#C9A96E',
 } as const
+
+// Armenia is permanently UTC+4 (no DST)
+export const TZ_OFFSET = '+04:00'
