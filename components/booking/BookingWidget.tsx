@@ -51,6 +51,7 @@ export default function BookingWidget() {
   const [services,  setServices]  = useState<Service[]>([])
   const [staffList, setStaffList] = useState<Staff[]>([])
   const [slots,     setSlots]     = useState<string[]>([])
+  const [busySlots, setBusySlots] = useState<string[]>([])
   const [availDays, setAvailDays] = useState<number[]>([])
   const [calMonth,  setCalMonth]  = useState<Date>(new Date())
   const [loading,   setLoading]   = useState(false)
@@ -100,7 +101,7 @@ export default function BookingWidget() {
     const dateStr = format(state.date, 'yyyy-MM-dd')
     fetch(`/api/available-slots?staffId=${state.staff.id}&serviceId=${state.service.id}&date=${dateStr}`)
       .then(r => r.json())
-      .then(d => setSlots(d.slots || []))
+      .then(d => { setSlots(d.slots || []); setBusySlots(d.busySlots || []) })
       .finally(() => setLoading(false))
   }, [state.date])
 
@@ -289,29 +290,50 @@ export default function BookingWidget() {
 
           {loading ? (
             <div className="text-center text-[#5a6475] py-8">{b.loading}</div>
-          ) : slots.length === 0 ? (
+          ) : slots.length === 0 && busySlots.length === 0 ? (
             <div className="text-center py-8">
               <p className="text-[#5a6475] mb-4">{b.noSlots}</p>
               <button className={`${S.btn} ${S.btnOutline}`} onClick={() => setStep(3)}>{b.pickOther}</button>
             </div>
           ) : (
             <>
+              {slots.length === 0 && busySlots.length > 0 && (
+                <p className="text-[#5a6475] text-sm mb-4">{b.noSlots}</p>
+              )}
               <div className="grid grid-cols-3 sm:grid-cols-4 gap-3 mb-6">
-                {slots.map(slot => (
-                  <button
-                    key={slot}
-                    onClick={() => { pick('slot', slot); goNext(5) }}
-                    className={`py-3 rounded-lg text-[15px] font-semibold border-2 transition-all ${
-                      state.slot === slot
-                        ? 'bg-[#C9A96E] text-white border-[#C9A96E]'
-                        : 'bg-white text-[#1B3A4B] border-[#e2e0da] hover:border-[#C9A96E] hover:text-[#C9A96E]'
-                    }`}
-                  >
-                    {format(parseISO(slot), 'HH:mm')}
-                  </button>
-                ))}
+                {[...slots, ...busySlots]
+                  .sort((a, b) => a.localeCompare(b))
+                  .map(slot => {
+                    const isBusy = busySlots.includes(slot)
+                    const isSelected = state.slot === slot
+                    return (
+                      <button
+                        key={slot}
+                        onClick={() => !isBusy && (pick('slot', slot), goNext(5))}
+                        disabled={isBusy}
+                        title={isBusy ? b.slotBusy : undefined}
+                        className={`py-3 rounded-lg text-[15px] font-semibold border-2 transition-all relative ${
+                          isBusy
+                            ? 'bg-[#f5f4f0] text-[#c8c5bd] border-[#ebe9e3] cursor-not-allowed'
+                            : isSelected
+                            ? 'bg-[#C9A96E] text-white border-[#C9A96E]'
+                            : 'bg-white text-[#1B3A4B] border-[#e2e0da] hover:border-[#C9A96E] hover:text-[#C9A96E]'
+                        }`}
+                      >
+                        <span className={isBusy ? 'opacity-50' : ''}>{format(parseISO(slot), 'HH:mm')}</span>
+                        {isBusy && (
+                          <span className="block text-[10px] font-medium text-[#bbb] leading-none mt-0.5">🔒</span>
+                        )}
+                      </button>
+                    )
+                  })}
               </div>
-              <button className={`${S.btn} ${S.btnOutline}`} onClick={() => setStep(3)}>{b.back}</button>
+              {slots.length > 0 && (
+                <button className={`${S.btn} ${S.btnOutline}`} onClick={() => setStep(3)}>{b.back}</button>
+              )}
+              {slots.length === 0 && (
+                <button className={`${S.btn} ${S.btnOutline}`} onClick={() => setStep(3)}>{b.pickOther}</button>
+              )}
             </>
           )}
         </div>

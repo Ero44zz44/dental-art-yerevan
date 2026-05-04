@@ -72,33 +72,36 @@ export async function GET(req: NextRequest) {
 
   const now = new Date()
   const slots: string[] = []
+  const busySlots: string[] = []
   let cursor = new Date(workStart)
+  const busyItems = [...(bookings || []), ...(blocked || [])]
 
   while (true) {
     const slotEnd = addMinutes(cursor, duration)
     if (isAfter(slotEnd, workEnd)) break
 
-    // Skip past slots
+    // Skip past slots — don't show them at all
     if (!isAfter(cursor, now)) {
       cursor = addMinutes(cursor, duration)
       continue
     }
 
     // Check overlap with bookings or blocked slots
-    const busyItems = [...(bookings || []), ...(blocked || [])]
     const overlaps = busyItems.some(item => {
       const bStart = new Date(item.start_time)
       const bEnd   = new Date(item.end_time)
       return cursor < bEnd && slotEnd > bStart
     })
 
-    if (!overlaps) {
-      // Return as UTC ISO so the browser displays it in local time correctly
-      slots.push(cursor.toISOString())
+    const isoSlot = cursor.toISOString()
+    if (overlaps) {
+      busySlots.push(isoSlot)
+    } else {
+      slots.push(isoSlot)
     }
 
     cursor = addMinutes(cursor, duration)
   }
 
-  return NextResponse.json({ slots })
+  return NextResponse.json({ slots, busySlots })
 }

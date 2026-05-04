@@ -111,6 +111,7 @@ export const T = {
       summaryTime:    'Ժամ',
       summaryEmail:   'Էլ. փոստ',
       minLabel:       'ր.',
+      slotBusy:       'Զբաղված',
       dayNames:       ['Կ', 'Բ', 'Գ', 'Դ', 'Հ', 'Ուր', 'Շ'],
       svcNameMap: {
         'Teeth Cleaning':      'Ատամների մաքրում',
@@ -235,6 +236,7 @@ export const T = {
       summaryTime:    'Time',
       summaryEmail:   'Email',
       minLabel:       'min',
+      slotBusy:       'Busy',
       dayNames:       ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
       svcNameMap: {
         'Teeth Cleaning':      'Teeth Cleaning',
@@ -359,6 +361,7 @@ export const T = {
       summaryTime:    'Время',
       summaryEmail:   'Эл. почта',
       minLabel:       'мин',
+      slotBusy:       'Занято',
       dayNames:       ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
       svcNameMap: {
         'Teeth Cleaning':      'Чистка зубов',
