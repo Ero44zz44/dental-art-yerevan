@@ -12,7 +12,7 @@ const SERVICE_IMAGES = [
   '/services/implants.png',
   '/services/orthodontics.png',
   '/services/veneers.png',
-  null, // replace with a photo when available
+  '/services/emergency.png',
 ]
 
 function ContactForm() {
