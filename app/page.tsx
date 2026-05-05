@@ -6,48 +6,13 @@ import Image from 'next/image'
 import { BUSINESS } from '@/lib/config'
 import { useTranslation } from '@/contexts/LanguageContext'
 
-const SERVICE_ICONS = [
-  // Teeth Cleaning
-  <svg key="cleaning" width="26" height="26" viewBox="0 0 26 26" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <path d="M13 3C9.5 3 7 6 7 9.5c0 1.8.5 3.8 1.5 5.8L10.5 22h5l2-6.7c1-2 1.5-4 1.5-5.8C19 6 16.5 3 13 3z"/>
-    <path d="M10.5 9.5c0-1.4 1.1-2.5 2.5-2.5s2.5 1.1 2.5 2.5"/>
-    <line x1="20" y1="4" x2="22" y2="2"/><line x1="21" y1="6" x2="24" y2="6"/><line x1="20" y1="8" x2="22" y2="10"/>
-  </svg>,
-  // Whitening
-  <svg key="whitening" width="26" height="26" viewBox="0 0 26 26" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <path d="M13 3C9.5 3 7 6 7 9.5c0 1.8.5 3.8 1.5 5.8L10.5 22h5l2-6.7c1-2 1.5-4 1.5-5.8C19 6 16.5 3 13 3z"/>
-    <path d="M10 12h6"/>
-    <line x1="22" y1="5" x2="24" y2="3"/><line x1="22" y1="9" x2="25" y2="9"/>
-  </svg>,
-  // Implants
-  <svg key="implants" width="26" height="26" viewBox="0 0 26 26" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <line x1="13" y1="3" x2="13" y2="22"/>
-    <rect x="10" y="3" width="6" height="5" rx="1.5"/>
-    <path d="M10 8h6l1 2-1 2h-6l-1-2z"/>
-    <path d="M10 12h6l1 2-1 2h-6l-1-2z"/>
-    <path d="M11 16h4l.5 2H10.5z"/>
-  </svg>,
-  // Orthodontics
-  <svg key="ortho" width="26" height="26" viewBox="0 0 26 26" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <rect x="4"  y="10" width="5" height="8" rx="2"/>
-    <rect x="10" y="10" width="6" height="8" rx="2"/>
-    <rect x="17" y="10" width="5" height="8" rx="2"/>
-    <line x1="4"  y1="14" x2="22" y2="14"/>
-    <circle cx="8" cy="14" r="1" fill="currentColor" stroke="none"/>
-    <circle cx="13" cy="14" r="1" fill="currentColor" stroke="none"/>
-    <circle cx="19" cy="14" r="1" fill="currentColor" stroke="none"/>
-  </svg>,
-  // Veneers
-  <svg key="veneers" width="26" height="26" viewBox="0 0 26 26" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <path d="M8 6h10a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z"/>
-    <path d="M8 10h10"/><path d="M8 14h10"/><path d="M12 6v13"/>
-  </svg>,
-  // Emergency
-  <svg key="emergency" width="26" height="26" viewBox="0 0 26 26" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <circle cx="13" cy="13" r="10"/>
-    <line x1="13" y1="8" x2="13" y2="18"/>
-    <line x1="8"  y1="13" x2="18" y2="13"/>
-  </svg>,
+const SERVICE_IMAGES = [
+  '/services/teeth-cleaning.png',
+  '/services/teeth-whitening.png',
+  '/services/implants.png',
+  '/services/orthodontics.png',
+  '/services/veneers.png',
+  null, // replace with a photo when available
 ]
 
 function ContactForm() {
@@ -291,16 +256,36 @@ export default function HomePage() {
           <div className="services-grid">
             {t.services.map((svc, i) => (
               <article className="service-card fade-in-up" key={i} ref={addRef}>
-                <div className="service-icon">{SERVICE_ICONS[i]}</div>
-                <h3>{svc.title}</h3>
-                <p>{svc.desc}</p>
-                <Link href="/#contact" className="service-link">
-                  {t.servicesSection.learnMore}
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                    <line x1="5" y1="12" x2="19" y2="12"/>
-                    <polyline points="12 5 19 12 12 19"/>
-                  </svg>
-                </Link>
+                <div className="service-card-image">
+                  {SERVICE_IMAGES[i] ? (
+                    <Image
+                      src={SERVICE_IMAGES[i]!}
+                      alt={svc.title}
+                      fill
+                      sizes="(max-width:768px) 100vw, (max-width:1024px) 50vw, 33vw"
+                      style={{ objectFit: 'cover' }}
+                    />
+                  ) : (
+                    <div className="service-card-image-placeholder">
+                      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <circle cx="12" cy="12" r="10"/>
+                        <line x1="12" y1="8" x2="12" y2="16"/>
+                        <line x1="8" y1="12" x2="16" y2="12"/>
+                      </svg>
+                    </div>
+                  )}
+                </div>
+                <div className="service-card-body">
+                  <h3>{svc.title}</h3>
+                  <p>{svc.desc}</p>
+                  <Link href="/#contact" className="service-link">
+                    {t.servicesSection.learnMore}
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <line x1="5" y1="12" x2="19" y2="12"/>
+                      <polyline points="12 5 19 12 12 19"/>
+                    </svg>
+                  </Link>
+                </div>
               </article>
             ))}
           </div>
