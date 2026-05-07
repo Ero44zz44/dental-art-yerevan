@@ -116,6 +116,19 @@ export default function CalendarPage() {
 
   return (
     <div>
+      <style>{`
+        .cal-cell { }
+        .cal-add-btn {
+          position: absolute; top: 4px; right: 4px;
+          width: 22px; height: 22px; border-radius: 4px;
+          border: 1px solid var(--border); background: var(--section-bg);
+          color: var(--text-light); font-size: 16px; line-height: 1;
+          cursor: pointer; opacity: 0; transition: opacity .15s, background .15s;
+          display: flex; align-items: center; justify-content: center; padding: 0;
+        }
+        .cal-cell:hover .cal-add-btn { opacity: 1; }
+        .cal-add-btn:hover { background: var(--accent); color: white; border-color: var(--accent); }
+      `}</style>
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
         <div>
@@ -127,7 +140,7 @@ export default function CalendarPage() {
         <div style={{ display: 'flex', gap: 10 }}>
           <button onClick={() => setWeekStart(w => subWeeks(w, 1))} className="btn btn-outline" style={{ padding: '8px 16px', fontSize: 14 }}>← Prev</button>
           <button onClick={() => setWeekStart(w => addWeeks(w, 1))} className="btn btn-outline" style={{ padding: '8px 16px', fontSize: 14 }}>Next →</button>
-          <button onClick={() => setModal('block')} className="btn btn-primary" style={{ padding: '8px 16px', fontSize: 14 }}>🚫 Block Time</button>
+          <button onClick={() => setModal('block')} className="btn btn-primary" style={{ padding: '8px 16px', fontSize: 14 }}>Block Time</button>
           <button onClick={() => { setSelSlot(null); setModal('booking') }} className="btn btn-primary" style={{ padding: '8px 16px', fontSize: 14 }}>+ Add Booking</button>
         </div>
       </div>
@@ -163,13 +176,18 @@ export default function CalendarPage() {
                 return (
                   <div
                     key={day.toISOString()}
-                    style={{ borderLeft: '1px solid var(--border)', padding: '4px', cursor: 'pointer', minHeight: 64 }}
-                    onClick={() => {
-                      setSelSlot({ date: day, hour })
-                      setBookForm(f => ({ ...f, date: format(day, 'yyyy-MM-dd'), time: `${String(hour).padStart(2,'0')}:00` }))
-                      setModal('booking')
-                    }}
+                    className="cal-cell"
+                    style={{ borderLeft: '1px solid var(--border)', padding: '4px', minHeight: 64, position: 'relative' }}
                   >
+                    <button
+                      className="cal-add-btn"
+                      onClick={() => {
+                        setSelSlot({ date: day, hour })
+                        setBookForm(f => ({ ...f, date: format(day, 'yyyy-MM-dd'), time: `${String(hour).padStart(2,'0')}:00` }))
+                        setModal('booking')
+                      }}
+                      title="Add booking"
+                    >+</button>
                     {dayBookings.map(b => (
                       <div
                         key={b.id}
@@ -194,7 +212,7 @@ export default function CalendarPage() {
                         }}
                         title={bl.reason || 'Blocked'}
                       >
-                        <div style={{ fontWeight: 700 }}>🚫 {format(new Date(bl.start_time), 'HH:mm')}–{format(new Date(bl.end_time), 'HH:mm')}</div>
+                        <div style={{ fontWeight: 700 }}>⊘ {format(new Date(bl.start_time), 'HH:mm')}–{format(new Date(bl.end_time), 'HH:mm')}</div>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                           <span style={{ opacity: .7 }}>{bl.reason || 'Blocked'}</span>
                           <button onClick={e => { e.stopPropagation(); deleteBlock(bl.id) }} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#dc2626', fontSize: 13, padding: '0 2px', lineHeight: 1 }}>×</button>

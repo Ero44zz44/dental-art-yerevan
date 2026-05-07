@@ -5,23 +5,27 @@ export const dynamic = 'force-dynamic'
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase'
 import type { Booking } from '@/lib/types'
-import { format, startOfDay, endOfDay, startOfWeek, endOfWeek } from 'date-fns'
+import { format, startOfDay, endOfDay, startOfWeek, endOfWeek, addDays } from 'date-fns'
 
 export default function DashboardPage() {
-  const [todayBookings, setTodayBookings]  = useState<Booking[]>([])
-  const [weekCount,     setWeekCount]      = useState(0)
-  const [loading,       setLoading]        = useState(true)
+  const [todayBookings,  setTodayBookings]  = useState<Booking[]>([])
+  const [weekCount,      setWeekCount]      = useState(0)
+  const [tomorrowCount,  setTomorrowCount]  = useState(0)
+  const [loading,        setLoading]        = useState(true)
   const supabase = createClient()
 
   useEffect(() => {
     async function load() {
-      const today = new Date()
-      const todayStart = startOfDay(today).toISOString()
-      const todayEnd   = endOfDay(today).toISOString()
-      const weekStart  = startOfWeek(today, { weekStartsOn: 1 }).toISOString()
-      const weekEnd    = endOfWeek(today,   { weekStartsOn: 1 }).toISOString()
+      const today    = new Date()
+      const tomorrow = addDays(today, 1)
+      const todayStart    = startOfDay(today).toISOString()
+      const todayEnd      = endOfDay(today).toISOString()
+      const tomorrowStart = startOfDay(tomorrow).toISOString()
+      const tomorrowEnd   = endOfDay(tomorrow).toISOString()
+      const weekStart     = startOfWeek(today, { weekStartsOn: 1 }).toISOString()
+      const weekEnd       = endOfWeek(today,   { weekStartsOn: 1 }).toISOString()
 
-      const [{ data: todayData }, { count }] = await Promise.all([
+      const [{ data: todayData }, { count: wCount }, { count: tmCount }] = await Promise.all([
         supabase
           .from('bookings')
           .select('*, staff:staff_id(name), service:service_id(name, duration_minutes)')
@@ -35,10 +39,17 @@ export default function DashboardPage() {
           .gte('start_time', weekStart)
           .lte('start_time', weekEnd)
           .eq('status', 'confirmed'),
+        supabase
+          .from('bookings')
+          .select('*', { count: 'exact', head: true })
+          .gte('start_time', tomorrowStart)
+          .lte('start_time', tomorrowEnd)
+          .eq('status', 'confirmed'),
       ])
 
       setTodayBookings((todayData as Booking[]) || [])
-      setWeekCount(count || 0)
+      setWeekCount(wCount || 0)
+      setTomorrowCount(tmCount || 0)
       setLoading(false)
     }
     load()
@@ -58,9 +69,9 @@ export default function DashboardPage() {
       {/* Stat cards */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20, marginBottom: 40 }}>
         {[
-          { label: "Today's bookings", value: loading ? '…' : todayBookings.length, color: '#1B3A4B' },
-          { label: 'This week',        value: loading ? '…' : weekCount,            color: '#C9A96E' },
-          { label: 'Confirmed',        value: loading ? '…' : todayBookings.length, color: '#16a34a' },
+          { label: "Today",     value: loading ? '…' : todayBookings.length, color: '#1B3A4B' },
+          { label: 'This week', value: loading ? '…' : weekCount,            color: '#C9A96E' },
+          { label: 'Tomorrow',  value: loading ? '…' : tomorrowCount,        color: '#16a34a' },
         ].map(({ label, value, color }) => (
           <div key={label} style={{ background: 'white', borderRadius: 12, padding: '24px 28px', boxShadow: '0 2px 8px rgba(0,0,0,.06)' }}>
             <p style={{ fontSize: 13, color: 'var(--text-light)', marginBottom: 8 }}>{label}</p>
