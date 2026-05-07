@@ -384,7 +384,7 @@ ul { list-style: none; }
   position: absolute;
   border-radius: 50%;
   border: 1.5px solid var(--accent);
-  opacity: .08;
+  opacity: .28;
   pointer-events: none;
 }
 #hero::before { width: 600px; height: 600px; top: -120px; right: -150px; }
@@ -395,7 +395,7 @@ ul { list-style: none; }
   position: absolute;
   border-radius: 50%;
   background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
-  opacity: .06;
+  opacity: .20;
   pointer-events: none;
 }
 .hero-deco-1 { width: 240px; height: 240px; top: 25%; right: 6%; }
@@ -613,6 +613,15 @@ ul { list-style: none; }
 
 .section-header .section-label { justify-content: center; }
 .section-header .section-label::before { display: none; }
+
+.section-header--left {
+  text-align: left;
+  margin-left: 0;
+  margin-right: 0;
+  max-width: 560px;
+}
+
+.section-header--left .section-label { justify-content: flex-start; }
 
 .section-header h2 {
   font-size: clamp(28px, 3.5vw, 44px);
@@ -986,7 +995,7 @@ footer {
   font-size: 14px;
   line-height: 1.85;
   margin-bottom: 28px;
-  color: rgba(255,255,255,.5);
+  color: rgba(255,255,255,.7);
   max-width: 280px;
 }
 

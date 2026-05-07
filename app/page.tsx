@@ -248,8 +248,7 @@ export default function HomePage() {
       {/* ── SERVICES ──────────────────────────────── */}
       <section id="services">
         <div className="container">
-          <div className="section-header fade-in-up" ref={addRef}>
-            <span className="section-label">{t.servicesSection.label}</span>
+          <div className="section-header section-header--left fade-in-up" ref={addRef}>
             <h2>{t.servicesSection.heading}</h2>
             <p>{t.servicesSection.sub}</p>
           </div>
@@ -306,7 +305,6 @@ export default function HomePage() {
               />
             </div>
             <div className="about-text fade-in-up" ref={addRef}>
-              <span className="section-label">{t.about.label}</span>
               <h2>Dr. Armen Hakobyan</h2>
               <p className="doctor-title">{t.about.doctorTitle}</p>
               <p className="bio">{t.about.bio}</p>
