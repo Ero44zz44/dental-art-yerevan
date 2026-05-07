@@ -1,5 +1,9 @@
 # Dental Art Yerevan — Project Guide
 
+## Skills
+For any frontend work (components, pages, UI, styling), load and apply:
+`.claude/skills/frontend-design/SKILL.md`
+
 ## What this project is
 A Next.js 14 website for **Dental Art Yerevan**, a dental clinic in Yerevan, Armenia.
 - Public site with multilingual support (Armenian 🇦🇲 / English / Russian)
