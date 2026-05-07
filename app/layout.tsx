@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
-import Header from '@/components/Header'
-import Footer from '@/components/Footer'
+import SiteShell from '@/components/SiteShell'
 import Providers from '@/components/Providers'
 
 export const metadata: Metadata = {
@@ -27,9 +26,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         <Providers>
-          <Header />
-          {children}
-          <Footer />
+          <SiteShell>
+            {children}
+          </SiteShell>
         </Providers>
       </body>
     </html>
