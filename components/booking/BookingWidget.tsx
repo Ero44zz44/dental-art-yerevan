@@ -426,6 +426,7 @@ export default function BookingWidget() {
           <div className="bg-[#F0EFEB] rounded-[12px] p-6 text-left mb-8 max-w-sm mx-auto">
             <div className="space-y-3">
               {[
+                ...(bookingId ? [[b.summaryRef, `#${bookingId.slice(0, 8).toUpperCase()}`]] : []),
                 [b.summaryService, b.svcNameMap[state.service?.name ?? ''] ?? state.service?.name],
                 [b.summaryDoctor,  state.staff?.name],
                 [b.summaryDate,    state.date ? format(state.date, 'd MMMM yyyy', { locale: dateLocale }) : ''],
