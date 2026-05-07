@@ -333,7 +333,7 @@ export default function HomePage() {
                   </div>
                   <div className="contact-item-text">
                     <p>{t.contact.addressLabel}</p>
-                    <span>{BUSINESS.addressArm}</span>
+                    <span>{t.contact.address}</span>
                   </div>
                 </div>
                 <div className="contact-item">
