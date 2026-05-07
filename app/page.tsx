@@ -297,9 +297,13 @@ export default function HomePage() {
         <div className="container">
           <div className="about-grid">
             <div className="about-image-wrap fade-in-up" ref={addRef}>
-              <div className="doctor-placeholder">
-                <span className="doctor-initials">ԱՀ</span>
-              </div>
+              <Image
+                src="/doctor-armen.png"
+                alt="Dr. Armen Hakobyan"
+                width={520}
+                height={580}
+                style={{ width: '100%', height: 'auto', borderRadius: 'var(--radius)', display: 'block' }}
+              />
             </div>
             <div className="about-text fade-in-up" ref={addRef}>
               <span className="section-label">{t.about.label}</span>
