@@ -30,8 +30,11 @@ GitHub: https://github.com/Ero44zz44/dental-art-yerevan
 | File | Purpose |
 |------|---------|
 | `app/page.tsx` | Homepage (Hero, InfoBar, Services, About, Contact) |
-| `app/layout.tsx` | Root layout, fonts, header/footer |
+| `app/layout.tsx` | Root layout, fonts — renders `SiteShell` which conditionally shows Header/Footer |
 | `app/globals.css` | All CSS — design tokens, component styles, responsive breakpoints |
+| `components/SiteShell.tsx` | Client wrapper — hides public Header/Footer on `/admin/*` routes |
+| `components/Header.tsx` | Sticky header + language switcher + mobile menu |
+| `components/Footer.tsx` | Footer |
 | `lib/translations.ts` | All UI text in Armenian / English / Russian |
 | `lib/config.ts` | Business constants (name, phone, address) + `TZ_OFFSET = '+04:00'` |
 | `lib/types.ts` | Shared TypeScript types (Booking, Staff, Service, BlockedSlot) |
@@ -40,14 +43,14 @@ GitHub: https://github.com/Ero44zz44/dental-art-yerevan
 | `lib/email.ts` | Resend email templates (customer confirmation + staff notification) |
 | `contexts/LanguageContext.tsx` | Language state (`useTranslation()` hook, persists to localStorage) |
 | `middleware.ts` | Protects `/admin/*` routes — redirects to `/admin/login` if no session |
-| `components/Header.tsx` | Sticky header + language switcher + mobile menu |
 | `components/booking/BookingWidget.tsx` | 6-step booking flow (client component) |
 | `app/book/page.tsx` | `/book` page hosting the widget |
 | `app/api/available-slots/route.ts` | Returns available + busy time slots for a staff/date/service |
 | `app/api/bookable-days/route.ts` | Returns which calendar days have at least one open slot |
 | `app/api/bookings/route.ts` | POST: inserts booking + sends confirmation emails |
+| `app/admin/layout.tsx` | Admin shell — fixed sidebar with SVG nav icons, logout, link to public site |
 | `app/admin/login/page.tsx` | Admin login (Supabase Auth) |
-| `app/admin/dashboard/page.tsx` | Today's bookings overview |
+| `app/admin/dashboard/page.tsx` | Today / This week / Tomorrow booking counts + today's appointment table |
 | `app/admin/calendar/page.tsx` | Week calendar — view/cancel bookings, block time, add manual bookings |
 | `app/admin/staff/page.tsx` | CRUD staff, working hours, assigned services |
 | `app/admin/services/page.tsx` | CRUD services |
@@ -63,14 +66,21 @@ Colors are CSS custom properties defined in `app/globals.css`:
 - `--accent: #C9A96E` (gold)
 - `--bg: #FAFAF8`, `--section-bg: #F2F0EC`
 
-Fonts loaded via `next/font/google` in `app/layout.tsx`:
-- Brand: Cormorant Garamond (`--font-brand`)
+Fonts loaded via Google Fonts `<link>` in `app/layout.tsx`:
+- Brand: DM Serif Display (`--font-brand`)
 - Headings: Noto Serif Armenian (`--font-heading-hy`)
-- Body: Inter
+- Body: Noto Sans Armenian (`--font-body-hy`)
 
 Service card images live in `public/services/` (16:9, shown at top of each card).
 To swap a photo: replace the file at `public/services/<name>.png`.
 Image paths are in the `SERVICE_IMAGES` array at the top of `app/page.tsx`.
+
+Doctor photo: `public/doctor-armen.png` — used in the About section.
+
+### Section header conventions
+- Most section headers: centered, eyebrow label + h2 + paragraph (`.section-header`)
+- Services section: **left-aligned, no eyebrow label** (`.section-header.section-header--left`)
+- About section: **no section header element** — doctor name + gold title line serve as the heading
 
 ---
 
@@ -89,6 +99,9 @@ The `booking` section of each language includes:
 - `svcNameMap`: maps English DB service names → translated display names
 - `svcDescMap`: maps English DB service names → translated descriptions
 - `minLabel`, `dayNames`, `slotBusy`: small booking UI strings
+- `summaryRef`: booking reference label on success screen
+
+The `contact` section of each language includes `address` (translated street address).
 
 When adding a new language string, add it to all three language objects.
 The `Translations` type is auto-inferred from `typeof T['en']`.
@@ -104,6 +117,15 @@ The `Translations` type is auto-inferred from `typeof T['en']`.
 - `blocked_slots` — admin-blocked times; `start_time`/`end_time` stored as UTC
 
 RLS policies: public can SELECT staff/services/working_hours/staff_services, anon can INSERT bookings, authenticated users have full access to everything.
+
+---
+
+## Admin panel notes
+- Admin layout (`app/admin/layout.tsx`) is a fully independent shell — fixed 220px sidebar, main content area with `marginLeft: 220`.
+- The public Header/Footer are suppressed on all `/admin/*` routes via `components/SiteShell.tsx`.
+- Sidebar nav uses SVG icons (no emojis).
+- Calendar: empty cells show a hover-only `+` button to add a booking — clicking the cell itself does nothing, preventing accidental modal triggers.
+- Dashboard shows three stat cards: **Today**, **This week**, **Tomorrow**.
 
 ---
 
