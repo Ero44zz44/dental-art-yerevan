@@ -1473,11 +1473,11 @@ footer {
 /* ===================================================
    BOOKING PAGE LAYOUT
    =================================================== */
-.book-page { padding-top: 76px; }
+.book-page { padding-top: 0; }
 
 .book-page-hero {
   background: linear-gradient(140deg, var(--primary-deep) 0%, var(--primary) 60%, var(--primary-mid) 100%);
-  padding: 72px 0 56px;
+  padding: 148px 0 56px;
   text-align: center;
   position: relative;
   overflow: hidden;
@@ -2175,7 +2175,7 @@ footer {
 }
 
 @media (max-width: 768px) {
-  .book-page-hero { padding: 56px 0 44px; }
+  .book-page-hero { padding: 112px 0 44px; }
   .book-layout { padding: 32px 0 64px; gap: 24px; }
   .booking-widget { padding: 24px; }
   .book-aside { grid-template-columns: 1fr; }
@@ -2185,7 +2185,7 @@ footer {
 }
 
 @media (max-width: 480px) {
-  .book-page-hero { padding: 48px 0 36px; }
+  .book-page-hero { padding: 108px 0 36px; }
   .book-page-badges { gap: 7px; }
   .book-page-badge { font-size: 12px; padding: 6px 12px; }
   .booking-widget { padding: 18px 16px; }
