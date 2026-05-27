@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerClient } from '@/lib/supabase-server'
-import { sendCustomerConfirmation, sendStaffNotification } from '@/lib/email'
+import { sendCustomerConfirmation } from '@/lib/email'
 import { addMinutes } from 'date-fns'
 
 export async function POST(req: NextRequest) {
@@ -82,13 +82,10 @@ export async function POST(req: NextRequest) {
     .eq('id', staffId)
     .single()
 
-  // Send emails — errors are caught so a mail failure never blocks the booking response
+  // Send customer confirmation only — owner sees bookings in the admin panel
   if (staff) {
     await sendCustomerConfirmation(booking, staff, service).catch(err =>
       console.error('Customer email error:', err)
-    )
-    await sendStaffNotification(booking, staff, service).catch(err =>
-      console.error('Staff email error:', err)
     )
   }
 
