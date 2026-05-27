@@ -1,8 +1,18 @@
 # Dental Art Yerevan — Project Guide
 
 ## Skills
-For any frontend work (components, pages, UI, styling), load and apply:
-`.claude/skills/frontend-design/SKILL.md`
+Load the right skill automatically based on what's being done — don't wait for the user to ask.
+
+| Skill | Load when… |
+|-------|-----------|
+| `frontend-design` | Any new component, page, or UI styling work |
+| `redesign-skill` | User asks to improve, modernize, or redesign an existing section |
+| `taste-skill` | Creating an entirely new page or major visual overhaul |
+| `soft-skill` | Adding premium animations, micro-interactions, or motion design |
+| `playwright` | After any UI change — screenshot desktop + mobile (390×844) to verify visually |
+| `lighthouse` | After deploying — audit performance ≥80, accessibility ≥90, SEO ≥90 |
+| `vercel-deploy` | Troubleshooting deployments, configuring env vars, or build errors |
+| `output-skill` | Generating large files — prevents truncated or placeholder output |
 
 ## What this project is
 A Next.js 14 website for **Dental Art Yerevan**, a dental clinic in Yerevan, Armenia.
@@ -140,15 +150,22 @@ Use **modern spoken Eastern Armenian (Yerevan dialect)** — not literary/formal
 
 ## Multilingual (i18n)
 All UI text is in `lib/translations.ts` — three top-level keys: `hy`, `en`, `ru`.
-The `booking` section of each language includes:
-- `svcNameMap`: maps English DB service names → translated display names
-- `svcDescMap`: maps English DB service names → translated descriptions
-- `minLabel`, `dayNames`, `slotBusy`: small booking UI strings
-- `summaryRef`: booking reference label on success screen
+
+**Critical rule: any page that renders translated strings must be `'use client'` and use `useTranslation()`.**
+Server components cannot read localStorage, so they always render the default language (Armenian).
+This is not a bug — it's a Next.js constraint. Converting to a client component is the fix.
+
+Current top-level translation sections (all three languages must have matching keys):
+- `hero`, `nav`, `infoBar`, `services`, `about`, `contact`, `footer` — homepage sections
+- `bookPage` — `/book` page hero + trust sidebar + emergency card
+- `booking` — booking widget UI, including:
+  - `svcNameMap`: English DB service name → translated display name
+  - `svcDescMap`: English DB service name → translated description
+  - `minLabel`, `dayNames`, `slotBusy`, `summaryRef`: small UI strings
 
 The `contact` section of each language includes `address` (translated street address).
 
-When adding a new language string, add it to all three language objects.
+When adding a new page with text: add a new section key to all three language objects, then use `useTranslation()` in a `'use client'` component.
 The `Translations` type is auto-inferred from `typeof T['en']`.
 
 ---
@@ -162,6 +179,26 @@ The `Translations` type is auto-inferred from `typeof T['en']`.
 - `blocked_slots` — admin-blocked times; `start_time`/`end_time` stored as UTC
 
 RLS policies: public can SELECT staff/services/working_hours/staff_services, anon can INSERT bookings, authenticated users have full access to everything.
+
+---
+
+## Animation conventions
+All animations live in `app/globals.css` as `@keyframes` + class rules — no JS animation libraries.
+Use `transform` and `opacity` only (GPU-accelerated). Never animate `top`, `left`, `height`, or `width`.
+
+Established easing vocabulary:
+- **Spring pop** `cubic-bezier(0.34, 1.56, 0.64, 1)` — buttons, calendar days, stepper dots, icon hovers
+- **Fast slide** `cubic-bezier(0.16, 1, 0.3, 1)` — mobile overlay slide-in (snappy, no bounce)
+- **Refined ease-out** `ease-out` — language switcher (medical site, no overshoot)
+
+Key animation patterns already in place:
+- Scroll progress bar: `.scroll-progress` div in `Header.tsx`, state-driven `width %`
+- Mobile menu: `.mobile-menu-overlay` uses `visibility + transform: translateX(100%)` — NOT `display:none` — so the CSS transition works
+- Hamburger → X morph: `.hamburger.is-open span:nth-child(n)` CSS transforms (no separate close button)
+- Button shimmer: `.btn-primary::before` pseudo-element with `btn-shimmer` keyframes, loops every 3.8s
+- Hero rings: `#hero::before` and `::after` with `ring-breathe` keyframes (5s, offset by 2.5s)
+- Floating doctor: `.about-image-wrap.visible` with `float-gentle` keyframes (5s infinite)
+- Scroll-triggered line draw: `.section-label::before` scales from 0→1 when `.fade-in-up.visible` is applied by IntersectionObserver
 
 ---
 
