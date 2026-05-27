@@ -5,7 +5,9 @@ import type { Booking, Staff, Service } from './types'
 function getResend() {
   return new Resend(process.env.RESEND_API_KEY || 'placeholder')
 }
-const FROM = 'Dental Art Yerevan <onboarding@resend.dev>'
+const FROM = process.env.RESEND_FROM_EMAIL
+  ? `Dental Art Yerevan <${process.env.RESEND_FROM_EMAIL}>`
+  : 'Dental Art Yerevan <onboarding@resend.dev>'
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString('hy-AM', {
