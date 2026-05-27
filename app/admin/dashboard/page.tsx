@@ -69,13 +69,30 @@ export default function DashboardPage() {
       {/* Stat cards */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20, marginBottom: 40 }}>
         {[
-          { label: "Today",     value: loading ? '…' : todayBookings.length, color: '#1B3A4B' },
-          { label: 'This week', value: loading ? '…' : weekCount,            color: '#C9A96E' },
-          { label: 'Tomorrow',  value: loading ? '…' : tomorrowCount,        color: '#16a34a' },
-        ].map(({ label, value, color }) => (
-          <div key={label} style={{ background: 'white', borderRadius: 12, padding: '24px 28px', boxShadow: '0 2px 8px rgba(0,0,0,.06)' }}>
-            <p style={{ fontSize: 13, color: 'var(--text-light)', marginBottom: 8 }}>{label}</p>
-            <p style={{ fontSize: 36, fontWeight: 700, color }}>{value}</p>
+          {
+            label: 'Today', value: loading ? '–' : todayBookings.length, color: 'var(--primary)',
+            icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>,
+            accent: 'rgba(27,58,75,.08)',
+          },
+          {
+            label: 'This week', value: loading ? '–' : weekCount, color: '#b8894a',
+            icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>,
+            accent: 'rgba(201,169,110,.12)',
+          },
+          {
+            label: 'Tomorrow', value: loading ? '–' : tomorrowCount, color: '#16a34a',
+            icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>,
+            accent: 'rgba(22,163,74,.08)',
+          },
+        ].map(({ label, value, color, icon, accent }) => (
+          <div key={label} style={{ background: 'white', borderRadius: 12, padding: '22px 24px', boxShadow: '0 2px 8px rgba(0,0,0,.06)', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+            <div>
+              <p style={{ fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.06em', color: 'var(--text-light)', marginBottom: 10 }}>{label}</p>
+              <p style={{ fontSize: 40, fontWeight: 700, color, lineHeight: 1 }}>{value}</p>
+            </div>
+            <div style={{ width: 42, height: 42, borderRadius: 10, background: accent, color, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              {icon}
+            </div>
           </div>
         ))}
       </div>

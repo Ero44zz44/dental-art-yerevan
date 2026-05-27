@@ -112,21 +112,33 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         {/* View site + Logout */}
         <div style={{ padding: '12px', borderTop: '1px solid rgba(255,255,255,.1)' }}>
           <Link href="/" target="_blank" style={{
-            display: 'block', padding: '8px 12px', fontSize: 13,
+            display: 'flex', alignItems: 'center', gap: 8, padding: '9px 12px', fontSize: 13,
             color: 'rgba(255,255,255,.5)', textDecoration: 'none', borderRadius: 8,
-            marginBottom: 4,
-          }}>
-            ↗ View site
+            marginBottom: 2, transition: 'color .15s, background .15s',
+          }}
+            onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.color = 'rgba(255,255,255,.9)'; (e.currentTarget as HTMLAnchorElement).style.background = 'rgba(255,255,255,.06)' }}
+            onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.color = 'rgba(255,255,255,.5)'; (e.currentTarget as HTMLAnchorElement).style.background = 'transparent' }}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
+            </svg>
+            View site
           </Link>
           <button
             onClick={logout}
             style={{
-              width: '100%', textAlign: 'left', padding: '8px 12px',
+              width: '100%', textAlign: 'left', padding: '9px 12px', display: 'flex', alignItems: 'center', gap: 8,
               background: 'none', border: 'none', cursor: 'pointer',
-              color: 'rgba(255,255,255,.5)', fontSize: 13, borderRadius: 8,
+              color: 'rgba(255,255,255,.5)', fontSize: 13, borderRadius: 8, transition: 'color .15s, background .15s',
+              fontFamily: 'var(--font-body-hy)',
             }}
+            onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.color = 'rgba(255,255,255,.9)'; (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,.06)' }}
+            onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.color = 'rgba(255,255,255,.5)'; (e.currentTarget as HTMLButtonElement).style.background = 'transparent' }}
           >
-            ← Logout
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
+            Logout
           </button>
         </div>
       </aside>
