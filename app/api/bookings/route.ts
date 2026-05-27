@@ -82,16 +82,13 @@ export async function POST(req: NextRequest) {
     .eq('id', staffId)
     .single()
 
-  // Send emails independently so one failure doesn't block the other
+  // Send emails — errors are caught so a mail failure never blocks the booking response
   if (staff) {
-    // Staff notification goes to the clinic owner email (env var) so it always arrives
-    const notifyEmail = process.env.RESEND_NOTIFY_EMAIL || staff.email
-    await sendStaffNotification({ ...booking }, { ...staff, email: notifyEmail }, service).catch(err =>
-      console.error('Staff email error:', err)
-    )
-    // Customer confirmation requires a verified domain in Resend to deliver to arbitrary addresses
     await sendCustomerConfirmation(booking, staff, service).catch(err =>
       console.error('Customer email error:', err)
+    )
+    await sendStaffNotification(booking, staff, service).catch(err =>
+      console.error('Staff email error:', err)
     )
   }
 

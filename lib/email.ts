@@ -1,13 +1,18 @@
-import { Resend } from 'resend'
+import nodemailer from 'nodemailer'
 import { BUSINESS } from './config'
 import type { Booking, Staff, Service } from './types'
 
-function getResend() {
-  return new Resend(process.env.RESEND_API_KEY || 'placeholder')
+function getTransporter() {
+  return nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: process.env.GMAIL_USER,
+      pass: process.env.GMAIL_APP_PASSWORD,
+    },
+  })
 }
-const FROM = process.env.RESEND_FROM_EMAIL
-  ? `Dental Art Yerevan <${process.env.RESEND_FROM_EMAIL}>`
-  : 'Dental Art Yerevan <onboarding@resend.dev>'
+
+const FROM = `Dental Art Yerevan <${process.env.GMAIL_USER ?? 'noreply@dental-art.am'}>`
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString('hy-AM', {
@@ -35,7 +40,7 @@ export async function sendCustomerConfirmation(
   const date = formatDate(booking.start_time)
   const time = formatTime(booking.start_time)
 
-  await getResend().emails.send({
+  await getTransporter().sendMail({
     from: FROM,
     to: booking.customer_email,
     subject: `Ձեր ժամադրությունը հաստատված է — ${date}`,
@@ -122,10 +127,11 @@ export async function sendStaffNotification(
 ) {
   const date = formatDate(booking.start_time)
   const time = formatTime(booking.start_time)
+  const notifyEmail = process.env.RESEND_NOTIFY_EMAIL || staff.email
 
-  await getResend().emails.send({
+  await getTransporter().sendMail({
     from: FROM,
-    to: staff.email,
+    to: notifyEmail,
     subject: `New Appointment — ${booking.customer_name} | ${date} ${time}`,
     html: `<!DOCTYPE html>
 <html lang="en">
