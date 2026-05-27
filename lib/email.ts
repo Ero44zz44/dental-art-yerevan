@@ -17,11 +17,15 @@ const FROM = `Dental Art Yerevan <${process.env.GMAIL_USER ?? 'noreply@dental-ar
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString('hy-AM', {
     weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
+    timeZone: 'Asia/Yerevan',
   })
 }
 
 function formatTime(iso: string) {
-  return new Date(iso).toLocaleTimeString('hy-AM', { hour: '2-digit', minute: '2-digit' })
+  return new Date(iso).toLocaleTimeString('hy-AM', {
+    hour: '2-digit', minute: '2-digit',
+    timeZone: 'Asia/Yerevan',
+  })
 }
 
 function row(label: string, value: string) {

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerClient } from '@/lib/supabase-server'
-import { addMinutes, getDaysInMonth, startOfDay, isAfter } from 'date-fns'
+import { addMinutes, getDaysInMonth, isAfter } from 'date-fns'
 import { TZ_OFFSET } from '@/lib/config'
 
 export async function GET(req: NextRequest) {
@@ -56,9 +56,11 @@ export async function GET(req: NextRequest) {
   for (let d = 1; d <= lastDay; d++) {
     const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(d).padStart(2, '0')}`
 
-    // Build the start of this day in Armenia local time for "is this day in the past?" check
+    // Compare date strings in Armenia time — avoids UTC startOfDay() mismatch on Vercel
+    const armeniaToday = new Date(now.getTime() + 4 * 60 * 60 * 1000).toISOString().slice(0, 10)
+    if (dateStr < armeniaToday) continue
+
     const dayInLocalTZ = new Date(`${dateStr}T00:00:00${TZ_OFFSET}`)
-    if (startOfDay(dayInLocalTZ) <= startOfDay(now)) continue
 
     // day-of-week in Armenia local time
     const dow = dayInLocalTZ.getUTCDay()
@@ -84,6 +86,11 @@ export async function GET(req: NextRequest) {
     while (true) {
       const slotEnd = addMinutes(cursor, duration)
       if (isAfter(slotEnd, workEnd)) break
+
+      if (!isAfter(cursor, now)) {
+        cursor = addMinutes(cursor, duration)
+        continue
+      }
 
       const overlaps = busyItems.some(item => {
         const bStart = new Date(item.start_time)
