@@ -1,13 +1,13 @@
+'use client'
+
 import BookingWidget from '@/components/booking/BookingWidget'
 import { BUSINESS } from '@/lib/config'
-import type { Metadata } from 'next'
-
-export const metadata: Metadata = {
-  title: 'Գրանցվել ընդունման — Dental Art Yerevan',
-  description: 'Գրանցեք ձեր ընդունումը Dental Art Yerevan-ում: Առցանց, արագ և հեշտ:',
-}
+import { useTranslation } from '@/contexts/LanguageContext'
 
 export default function BookPage() {
+  const { t } = useTranslation()
+  const bp = t.bookPage
+
   return (
     <main className="book-page">
 
@@ -15,11 +15,11 @@ export default function BookPage() {
       <div className="book-page-hero">
         <div className="container">
           <p className="book-page-eyebrow">Dental Art Yerevan</p>
-          <h1 className="book-page-title">Գրանցվել ընդունման</h1>
+          <h1 className="book-page-title">{t.hero.cta}</h1>
           <div className="book-page-badges">
-            <span className="book-page-badge">✓ 2 րոպե</span>
-            <span className="book-page-badge">✓ Անմիջապես հաստատված</span>
-            <span className="book-page-badge">✓ Անվճար չեղարկում</span>
+            <span className="book-page-badge">{bp.badge1}</span>
+            <span className="book-page-badge">{bp.badge2}</span>
+            <span className="book-page-badge">{bp.badge3}</span>
           </div>
         </div>
       </div>
@@ -35,7 +35,7 @@ export default function BookPage() {
           {/* Trust sidebar */}
           <aside className="book-aside">
             <div className="book-trust-card">
-              <p className="book-trust-title">Ինչու՞ Dental Art</p>
+              <p className="book-trust-title">{bp.trustTitle}</p>
 
               <div className="book-trust-item">
                 <div className="book-trust-icon">
@@ -44,8 +44,8 @@ export default function BookPage() {
                   </svg>
                 </div>
                 <div className="book-trust-text">
-                  <strong>15+ տարվա փորձ</strong>
-                  Ավելի քան 3000 հաճախորդ
+                  <strong>{bp.trustExp}</strong>
+                  {bp.trustPatients}
                 </div>
               </div>
 
@@ -57,9 +57,9 @@ export default function BookPage() {
                   </svg>
                 </div>
                 <div className="book-trust-text">
-                  <strong>Աշխ. ժամեր</strong>
-                  Երկ–Ուրբ: 09:00–19:00<br />
-                  Շաբ: 10:00–15:00
+                  <strong>{t.infoBar.hoursTitle}</strong>
+                  {t.infoBar.weekdays}<br />
+                  {t.infoBar.saturday}
                 </div>
               </div>
 
@@ -70,7 +70,7 @@ export default function BookPage() {
                   </svg>
                 </div>
                 <div className="book-trust-text">
-                  <strong>Կապ</strong>
+                  <strong>{t.nav.contact}</strong>
                   <a href={BUSINESS.phoneHref} className="book-trust-phone">{BUSINESS.phone}</a>
                 </div>
               </div>
@@ -84,15 +84,15 @@ export default function BookPage() {
                   </svg>
                 </div>
                 <div className="book-trust-text">
-                  <strong>Անվտանգ ամրագրում</strong>
-                  Ձեր տվյալները պաշտպանված են
+                  <strong>{bp.trustSecure}</strong>
+                  {bp.trustSecureDesc}
                 </div>
               </div>
             </div>
 
             <div className="book-trust-card book-trust-card--accent">
-              <p className="book-trust-accent-label">Շտապ օգնություն</p>
-              <p className="book-trust-accent-text">Նույն օրվա ընդունման համար զանգահարեք</p>
+              <p className="book-trust-accent-label">{bp.emergencyTitle}</p>
+              <p className="book-trust-accent-text">{bp.emergencyDesc}</p>
               <a href={BUSINESS.phoneHref} className="book-call-btn">{BUSINESS.phone}</a>
             </div>
           </aside>

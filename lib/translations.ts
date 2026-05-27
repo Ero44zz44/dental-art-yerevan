@@ -146,6 +146,18 @@ export const T = {
         'Implant Installation':'Ատամի մշտական փոխարինում, որ արտաքուստ և գործառույթով նման է բնական ատամին:',
       } as Record<string, string>,
     },
+    bookPage: {
+      badge1:          '✓ 2 րոպե',
+      badge2:          '✓ Անմիջապես հաստատված',
+      badge3:          '✓ Անվճար չեղարկում',
+      trustTitle:      'Ինչու՞ Dental Art',
+      trustExp:        '15+ տարվա փորձ',
+      trustPatients:   'Ավելի քան 3000 հաճախորդ',
+      trustSecure:     'Անվտանգ ամրագրում',
+      trustSecureDesc: 'Ձեր տվյալները պաշտպանված են',
+      emergencyTitle:  'Շտապ օգնություն',
+      emergencyDesc:   'Նույն օրվա ընդունման համար զանգահարեք',
+    },
   },
 
   en: {
@@ -293,6 +305,18 @@ export const T = {
         'Implant Installation':'Permanent tooth replacement that looks and functions like a natural tooth.',
       } as Record<string, string>,
     },
+    bookPage: {
+      badge1:          '✓ 2 min',
+      badge2:          '✓ Instantly confirmed',
+      badge3:          '✓ Free cancellation',
+      trustTitle:      'Why Dental Art',
+      trustExp:        '15+ years of experience',
+      trustPatients:   'Over 3,000 patients',
+      trustSecure:     'Secure Booking',
+      trustSecureDesc: 'Your data is protected',
+      emergencyTitle:  'Emergency',
+      emergencyDesc:   'For same-day appointments, call us',
+    },
   },
 
   ru: {
@@ -439,6 +463,18 @@ export const T = {
         'Consultation':        'Бесплатная первичная консультация о состоянии ваших зубов.',
         'Implant Installation':'Постоянная замена зуба, неотличимая по виду и функции от натурального.',
       } as Record<string, string>,
+    },
+    bookPage: {
+      badge1:          '✓ 2 мин',
+      badge2:          '✓ Мгновенное подтверждение',
+      badge3:          '✓ Бесплатная отмена',
+      trustTitle:      'Почему Dental Art',
+      trustExp:        '15+ лет опыта',
+      trustPatients:   'Более 3 000 пациентов',
+      trustSecure:     'Безопасная запись',
+      trustSecureDesc: 'Ваши данные защищены',
+      emergencyTitle:  'Скорая помощь',
+      emergencyDesc:   'Для записи в день обращения позвоните нам',
     },
   },
 }
