@@ -14,8 +14,9 @@ const LANGS: { code: Lang; label: string }[] = [
 
 export default function Header() {
   const { t, lang, setLang } = useTranslation()
-  const [scrolled,  setScrolled]  = useState(false)
-  const [menuOpen,  setMenuOpen]  = useState(false)
+  const [scrolled,       setScrolled]       = useState(false)
+  const [menuOpen,       setMenuOpen]       = useState(false)
+  const [scrollProgress, setScrollProgress] = useState(0)
   const headerRef = useRef<HTMLElement>(null)
 
   const NAV = [
@@ -26,7 +27,11 @@ export default function Header() {
   ]
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 50)
+    const onScroll = () => {
+      setScrolled(window.scrollY > 50)
+      const total = document.documentElement.scrollHeight - window.innerHeight
+      setScrollProgress(total > 0 ? (window.scrollY / total) * 100 : 0)
+    }
     window.addEventListener('scroll', onScroll, { passive: true })
     onScroll()
     return () => window.removeEventListener('scroll', onScroll)
@@ -45,6 +50,7 @@ export default function Header() {
 
   return (
     <>
+      <div className="scroll-progress" style={{ width: `${scrollProgress}%` }} aria-hidden="true" />
       <header id="site-header" ref={headerRef} className={scrolled ? 'scrolled' : ''}>
         <div className="container header-inner">
 
