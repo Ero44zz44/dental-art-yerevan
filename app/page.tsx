@@ -234,7 +234,7 @@ export default function HomePage() {
                 width={620}
                 height={620}
                 priority
-                style={{ width: '100%', height: 'auto' }}
+                style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', inset: 0 }}
               />
             </div>
           </div>
@@ -317,7 +317,7 @@ export default function HomePage() {
           </div>
           <div className="services-grid">
             {t.services.map((svc, i) => (
-              <article className={`service-card fade-in-up${i < 2 ? ' service-card--wide' : ''}`} key={i} ref={addRef}>
+              <article className="service-card fade-in-up" key={i} ref={addRef}>
                 <div className="service-card-image">
                   {SERVICE_IMAGES[i] ? (
                     <Image
@@ -370,6 +370,11 @@ export default function HomePage() {
             <div className="about-text fade-in-up" ref={addRef}>
               <h2>{t.about.doctorName}</h2>
               <p className="doctor-title">{t.about.doctorTitle}</p>
+              <div className="about-credentials">
+                <span className="about-credential-pill">15+ {t.hero.statYears}</span>
+                <span className="about-credential-pill">3 000+ {t.hero.statPatients}</span>
+                <span className="about-credential-pill">Yerevan, Armenia</span>
+              </div>
               <p className="bio">{t.about.bio}</p>
               <blockquote className="about-quote">
                 <p>{t.about.quote}</p>
