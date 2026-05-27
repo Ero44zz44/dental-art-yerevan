@@ -91,12 +91,12 @@ export default function Header() {
           </div>
 
           <button
-            className="hamburger"
+            className={`hamburger${menuOpen ? ' is-open' : ''}`}
             id="hamburger-btn"
-            aria-label="Open menu"
+            aria-label={menuOpen ? 'Close menu' : 'Open menu'}
             aria-expanded={menuOpen}
             aria-controls="mobile-menu"
-            onClick={() => setMenuOpen(true)}
+            onClick={() => setMenuOpen(v => !v)}
           >
             <span /><span /><span />
           </button>
@@ -110,12 +110,6 @@ export default function Header() {
         aria-modal="true"
         aria-label="Mobile navigation"
       >
-        <button className="mobile-close" aria-label="Close menu" onClick={() => setMenuOpen(false)}>
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-          </svg>
-        </button>
-
         {/* Mobile language switcher */}
         <div className="lang-switcher lang-switcher--mobile" role="group" aria-label="Language">
           {LANGS.map(({ code, label }) => (
