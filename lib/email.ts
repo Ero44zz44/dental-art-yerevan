@@ -5,7 +5,7 @@ import type { Booking, Staff, Service } from './types'
 function getResend() {
   return new Resend(process.env.RESEND_API_KEY || 'placeholder')
 }
-const FROM = () => process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev'
+const FROM = 'Dental Art Yerevan <onboarding@resend.dev>'
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString('hy-AM', {
@@ -34,7 +34,7 @@ export async function sendCustomerConfirmation(
   const time = formatTime(booking.start_time)
 
   await getResend().emails.send({
-    from: `${BUSINESS.name} <${FROM()}>`,
+    from: FROM,
     to: booking.customer_email,
     subject: `Ձեր ժամադրությունը հաստատված է — ${date}`,
     html: `<!DOCTYPE html>
@@ -122,7 +122,7 @@ export async function sendStaffNotification(
   const time = formatTime(booking.start_time)
 
   await getResend().emails.send({
-    from: `${BUSINESS.name} <${FROM()}>`,
+    from: FROM,
     to: staff.email,
     subject: `New Appointment — ${booking.customer_name} | ${date} ${time}`,
     html: `<!DOCTYPE html>

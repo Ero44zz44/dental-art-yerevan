@@ -113,9 +113,47 @@ function ContactForm() {
   )
 }
 
+function StatNumber({ value }: { value: string }) {
+  const spanRef = useRef<HTMLSpanElement>(null)
+  const [display, setDisplay] = useState(value)
+  const doneRef = useRef(false)
+
+  useEffect(() => {
+    const el = spanRef.current
+    if (!el) return
+    const match = value.match(/^(\d+)(.*)$/)
+    if (!match) return
+    const end = parseInt(match[1]!, 10)
+    const suffix = match[2] ?? ''
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry?.isIntersecting || doneRef.current) return
+        doneRef.current = true
+        observer.disconnect()
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+        const startTime = performance.now()
+        const tick = (now: number) => {
+          const t = Math.min((now - startTime) / 1200, 1)
+          const eased = 1 - Math.pow(1 - t, 3)
+          setDisplay(String(Math.round(eased * end)) + suffix)
+          if (t < 1) requestAnimationFrame(tick)
+        }
+        setDisplay('0' + suffix)
+        requestAnimationFrame(tick)
+      },
+      { threshold: 0.5 }
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [value])
+
+  return <span className="why-card-num" ref={spanRef}>{display}</span>
+}
+
 export default function HomePage() {
   const { t } = useTranslation()
   const fadeRefs = useRef<HTMLElement[]>([])
+  const [showFloatCta, setShowFloatCta] = useState(false)
 
   useEffect(() => {
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -141,6 +179,12 @@ export default function HomePage() {
     } else {
       els.forEach(el => el.classList.add('visible'))
     }
+  }, [])
+
+  useEffect(() => {
+    const handleScroll = () => setShowFloatCta(window.scrollY > 480)
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
   const addRef = (el: HTMLElement | null) => {
@@ -245,6 +289,25 @@ export default function HomePage() {
         </div>
       </div>
 
+      {/* ── WHY US ────────────────────────────────── */}
+      <section id="why-us">
+        <div className="container">
+          <div className="section-header fade-in-up" ref={addRef}>
+            <span className="section-label">{t.whyUs.label}</span>
+            <h2>{t.whyUs.heading}</h2>
+          </div>
+          <div className="why-grid">
+            {t.whyUs.items.map((item, i) => (
+              <div className="why-card fade-in-up" key={i} ref={addRef}>
+                <StatNumber value={item.num} />
+                <h3>{item.label}</h3>
+                <p>{item.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ── SERVICES ──────────────────────────────── */}
       <section id="services">
         <div className="container">
@@ -254,7 +317,7 @@ export default function HomePage() {
           </div>
           <div className="services-grid">
             {t.services.map((svc, i) => (
-              <article className="service-card fade-in-up" key={i} ref={addRef}>
+              <article className={`service-card fade-in-up${i < 2 ? ' service-card--wide' : ''}`} key={i} ref={addRef}>
                 <div className="service-card-image">
                   {SERVICE_IMAGES[i] ? (
                     <Image
@@ -305,7 +368,7 @@ export default function HomePage() {
               />
             </div>
             <div className="about-text fade-in-up" ref={addRef}>
-              <h2>Dr. Armen Hakobyan</h2>
+              <h2>{t.about.doctorName}</h2>
               <p className="doctor-title">{t.about.doctorTitle}</p>
               <p className="bio">{t.about.bio}</p>
               <blockquote className="about-quote">
@@ -313,6 +376,39 @@ export default function HomePage() {
               </blockquote>
               <Link href="/book" className="btn btn-primary">{t.about.cta}</Link>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── TESTIMONIALS ──────────────────────────── */}
+      <section id="testimonials">
+        <div className="container">
+          <div className="section-header fade-in-up" ref={addRef}>
+            <span className="section-label">{t.testimonials.label}</span>
+            <h2>{t.testimonials.heading}</h2>
+          </div>
+          <div className="testimonials-grid">
+            {t.testimonials.items.map((item, i) => (
+              <article className="testimonial-card fade-in-up" key={i} ref={addRef}>
+                <div className="testimonial-stars" aria-label="5 stars">
+                  {[...Array(5)].map((_, s) => (
+                    <svg key={s} width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                    </svg>
+                  ))}
+                </div>
+                <p className="testimonial-text">{item.text}</p>
+                <div className="testimonial-author">
+                  <div className="testimonial-avatar" aria-hidden="true">
+                    {item.name.charAt(0)}
+                  </div>
+                  <div>
+                    <p className="testimonial-name">{item.name}</p>
+                    <p className="testimonial-role">{item.role}</p>
+                  </div>
+                </div>
+              </article>
+            ))}
           </div>
         </div>
       </section>
@@ -380,6 +476,13 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* ── FLOATING MOBILE CTA ───────────────────── */}
+      <div className={`floating-book-btn${showFloatCta ? ' visible' : ''}`} aria-hidden={!showFloatCta}>
+        <Link href="/book" className="btn btn-primary" tabIndex={showFloatCta ? 0 : -1}>
+          {t.header.book}
+        </Link>
+      </div>
     </main>
   )
 }

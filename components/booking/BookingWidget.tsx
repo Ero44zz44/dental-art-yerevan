@@ -30,15 +30,11 @@ const INITIAL: BookingState = {
 }
 
 const S = {
-  card:         'bg-white rounded-[12px] border border-[#e2e0da] p-6 cursor-pointer transition-all duration-200 hover:border-[#C9A96E] hover:shadow-md flex flex-col gap-3',
-  cardSelected: 'bg-white rounded-[12px] border-2 border-[#C9A96E] p-6 cursor-pointer transition-all duration-200 shadow-md flex flex-col gap-3',
-  btn:          'inline-flex items-center justify-center gap-2 px-7 py-3 rounded-md font-semibold text-[15px] cursor-pointer transition-all duration-200 border-2 border-transparent min-h-[48px]',
-  btnPrimary:   'bg-[#C9A96E] text-white hover:bg-[#a8854e] hover:-translate-y-0.5',
-  btnOutline:   'border-[#e2e0da] text-[#1B3A4B] hover:border-[#C9A96E] hover:text-[#C9A96E]',
-  input:        'w-full px-3 py-3 rounded-lg border border-[#e2e0da] bg-[#FAFAF7] text-[#1A1A1A] text-[15px] outline-none transition-all focus:border-[#C9A96E] focus:ring-2 focus:ring-[#C9A96E]/20 font-[inherit]',
-  label:        'block text-[13px] font-semibold text-[#1A1A1A] mb-1.5',
-  stepHeading:  'text-[22px] font-bold text-[#1B3A4B] font-[--font-heading-hy] mb-1',
-  stepSub:      'text-[14px] text-[#5a6475] mb-6',
+  btn:        'inline-flex items-center justify-center gap-2 px-7 py-3 rounded-md font-semibold text-[15px] cursor-pointer transition-all duration-200 border-2 min-h-[48px]',
+  btnPrimary: 'bg-[#C9A96E] text-white border-[#C9A96E] hover:bg-[#a8854e] hover:-translate-y-0.5',
+  btnOutline: 'border-[#e2e0da] text-[#1B3A4B] hover:border-[#C9A96E] hover:text-[#C9A96E]',
+  input:      'w-full px-3 py-3 rounded-lg border border-[#e2e0da] bg-[#FAFAF7] text-[#1A1A1A] text-[15px] outline-none transition-all focus:border-[#C9A96E] focus:ring-2 focus:ring-[#C9A96E]/20 font-[inherit]',
+  label:      'block text-[13px] font-semibold text-[#1A1A1A] mb-1.5',
 }
 
 export default function BookingWidget() {
@@ -47,6 +43,7 @@ export default function BookingWidget() {
   const dateLocale = lang === 'hy' ? hyLocale : lang === 'ru' ? ruLocale : enUS
 
   const [step,      setStep]      = useState<Step>(1)
+  const [dir,       setDir]       = useState<'fwd' | 'back'>('fwd')
   const [state,     setState]     = useState<BookingState>(INITIAL)
   const [services,  setServices]  = useState<Service[]>([])
   const [staffList, setStaffList] = useState<Staff[]>([])
@@ -109,7 +106,8 @@ export default function BookingWidget() {
     setState(s => ({ ...s, [key]: value }))
   }
 
-  function goNext(s: Step) { setErrors({}); setStep(s) }
+  function goNext(s: Step) { setDir('fwd'); setErrors({}); setStep(s) }
+  function goBack(s: Step) { setDir('back'); setStep(s) }
 
   async function submitBooking() {
     const newErrors: Record<string, string> = {}
@@ -137,6 +135,7 @@ export default function BookingWidget() {
       const data = await res.json()
       if (!res.ok) { setErrors({ submit: data.error || b.errSubmit }); return }
       setBookingId(data.booking.id)
+      setDir('fwd')
       setStep(6)
     } catch {
       setErrors({ submit: b.errSubmit })
@@ -145,286 +144,258 @@ export default function BookingWidget() {
     }
   }
 
-  return (
-    <div className="max-w-2xl mx-auto">
+  const fillPct = step < 6 ? ((step - 1) / 4) * 100 : 100
 
-      {/* Progress bar */}
+  return (
+    <div className="booking-widget">
+
+      {/* ── Progress stepper ────────────────────── */}
       {step < 6 && (
-        <div className="mb-8">
-          <div className="flex items-center gap-2 mb-3">
-            {([1,2,3,4,5] as Step[]).map(s => (
-              <div key={s} className="flex items-center gap-2 flex-1">
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold shrink-0 transition-all ${
-                  step > s ? 'bg-[#C9A96E] text-white' :
-                  step === s ? 'bg-[#1B3A4B] text-white' :
-                  'bg-[#F0EFEB] text-[#5a6475]'
-                }`}>{step > s ? '✓' : s}</div>
-                {s < 5 && <div className={`h-0.5 flex-1 transition-all ${step > s ? 'bg-[#C9A96E]' : 'bg-[#e2e0da]'}`} />}
+        <div className="booking-stepper">
+          <div className="booking-stepper-bar">
+            <div className="booking-stepper-bar-fill" style={{ width: `${fillPct}%` }} />
+          </div>
+          <div className="booking-stepper-dots">
+            {([1, 2, 3, 4, 5] as Step[]).map(s => (
+              <div key={s} className={`booking-stepper-dot${step > s ? ' done' : step === s ? ' active' : ''}`}>
+                <div className="booking-stepper-dot-circle">
+                  {step > s ? (
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="20 6 9 17 4 12"/>
+                    </svg>
+                  ) : s}
+                </div>
+                <span className="booking-stepper-dot-label">{b.progressLabels[s - 1]}</span>
               </div>
             ))}
           </div>
-          <div className="text-xs text-[#5a6475] font-medium">
-            {b.progressLabels[step - 1]}
-          </div>
         </div>
       )}
 
-      {/* Step 1: Services */}
-      {step === 1 && (
-        <div>
-          <h2 className={S.stepHeading}>{b.step1Heading}</h2>
-          <p className={S.stepSub}>{b.step1Sub}</p>
-          {services.length === 0 && <p className="text-[#5a6475]">{b.loading}</p>}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {services.map(svc => (
-              <button
-                key={svc.id}
-                className={state.service?.id === svc.id ? S.cardSelected : S.card}
-                onClick={() => { pick('service', svc); goNext(2) }}
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div className="w-11 h-11 bg-[rgba(201,169,110,.12)] rounded-[10px] flex items-center justify-center text-[#C9A96E] shrink-0">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M12 2C8.5 2 6 5 6 8.5c0 1.7.5 3.5 1.4 5.3L9.5 21h5l2.1-7.2c.9-1.8 1.4-3.6 1.4-5.3C18 5 15.5 2 12 2z"/>
-                    </svg>
+      {/* ── Selection chips ──────────────────────── */}
+      {step > 1 && step < 6 && (
+        <div className="booking-chips">
+          {state.service && (
+            <span className="booking-chip">
+              {b.svcNameMap[state.service.name] ?? state.service.name}
+            </span>
+          )}
+          {state.staff && <span className="booking-chip">{state.staff.name}</span>}
+          {state.date  && <span className="booking-chip">{format(state.date, 'd MMM', { locale: dateLocale })}</span>}
+          {state.slot  && <span className="booking-chip">{format(parseISO(state.slot), 'HH:mm')}</span>}
+        </div>
+      )}
+
+      {/* ── Animated step wrapper ────────────────── */}
+      <div key={step} className={`booking-step booking-step--${dir}`}>
+
+        {/* Step 1 — Service selection */}
+        {step === 1 && (
+          <div>
+            <h2 className="booking-step-heading">{b.step1Heading}</h2>
+            <p className="booking-step-sub">{b.step1Sub}</p>
+            {services.length === 0 && <p className="booking-loading">{b.loading}</p>}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {services.map(svc => (
+                <button
+                  key={svc.id}
+                  className={`booking-svc-card${state.service?.id === svc.id ? ' selected' : ''}`}
+                  onClick={() => { pick('service', svc); goNext(2) }}
+                >
+                  <div className="booking-svc-card-top">
+                    <div className="booking-svc-icon">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M12 2C8.5 2 6 5 6 8.5c0 1.7.5 3.5 1.4 5.3L9.5 21h5l2.1-7.2c.9-1.8 1.4-3.6 1.4-5.3C18 5 15.5 2 12 2z"/>
+                      </svg>
+                    </div>
+                    <span className="booking-svc-duration">{svc.duration_minutes} {b.minLabel}</span>
                   </div>
-                  <span className="text-[13px] font-bold text-[#C9A96E] bg-[rgba(201,169,110,.1)] px-2 py-0.5 rounded-md shrink-0">
-                    {svc.duration_minutes} {b.minLabel}
-                  </span>
-                </div>
-                <div>
-                  <h3 className="text-[16px] font-bold text-[#1B3A4B]">{b.svcNameMap[svc.name] ?? svc.name}</h3>
-                  <p className="text-[13px] text-[#5a6475] mt-1 leading-relaxed">{b.svcDescMap[svc.name] ?? svc.description ?? ''}</p>
-                </div>
-                <div className="text-[15px] font-bold text-[#1B3A4B] mt-auto">
-                  {svc.price.toLocaleString()} AMD
-                </div>
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Step 2: Staff */}
-      {step === 2 && (
-        <div>
-          <h2 className={S.stepHeading}>{b.step2Heading}</h2>
-          <p className={S.stepSub}>{b.step2Sub}</p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-            {staffList.map(s => (
-              <button
-                key={s.id}
-                className={state.staff?.id === s.id ? S.cardSelected : S.card}
-                onClick={() => { pick('staff', s); goNext(3) }}
-              >
-                <div className="w-16 h-16 rounded-full bg-[#e8e4d9] border-2 border-[#C9A96E] flex items-center justify-center mx-auto shrink-0">
-                  {s.photo_url ? (
-                    <img src={s.photo_url} alt={s.name} className="w-full h-full rounded-full object-cover" />
-                  ) : (
-                    <span className="text-[#1B3A4B] font-bold text-lg">
-                      {s.name.split(' ').map(w => w[0]).slice(0, 2).join('')}
-                    </span>
-                  )}
-                </div>
-                <div className="text-center">
-                  <h3 className="text-[16px] font-bold text-[#1B3A4B]">{s.name}</h3>
-                </div>
-              </button>
-            ))}
-          </div>
-          <button className={`${S.btn} ${S.btnOutline}`} onClick={() => setStep(1)}>{b.back}</button>
-        </div>
-      )}
-
-      {/* Step 3: Calendar */}
-      {step === 3 && (
-        <div>
-          <h2 className={S.stepHeading}>{b.step3Heading}</h2>
-          <p className={S.stepSub}>{b.step3Sub}</p>
-
-          <div className="bg-white rounded-[12px] border border-[#e2e0da] p-5 mb-6">
-            <div className="flex items-center justify-between mb-4">
-              <button
-                className="w-9 h-9 rounded-full border border-[#e2e0da] flex items-center justify-center hover:border-[#C9A96E] hover:text-[#C9A96E] transition-all"
-                onClick={() => setCalMonth(m => subMonths(m, 1))}
-                disabled={isBefore(startOfMonth(subMonths(calMonth, 1)), startOfMonth(new Date()))}
-              >‹</button>
-              <span className="font-bold text-[#1B3A4B] text-[15px]">
-                {format(calMonth, 'MMMM yyyy', { locale: dateLocale })}
-              </span>
-              <button
-                className="w-9 h-9 rounded-full border border-[#e2e0da] flex items-center justify-center hover:border-[#C9A96E] hover:text-[#C9A96E] transition-all"
-                onClick={() => setCalMonth(m => addMonths(m, 1))}
-              >›</button>
-            </div>
-
-            <div className="grid grid-cols-7 gap-1 mb-1">
-              {b.dayNames.map((d, i) => (
-                <div key={i} className="text-center text-[11px] font-bold text-[#5a6475] py-1">{d}</div>
+                  <h3 className="booking-svc-name">{b.svcNameMap[svc.name] ?? svc.name}</h3>
+                  <p className="booking-svc-desc">{b.svcDescMap[svc.name] ?? svc.description ?? ''}</p>
+                  <div className="booking-svc-price">{svc.price.toLocaleString()} AMD</div>
+                </button>
               ))}
             </div>
+          </div>
+        )}
 
+        {/* Step 2 — Doctor selection */}
+        {step === 2 && (
+          <div>
+            <h2 className="booking-step-heading">{b.step2Heading}</h2>
+            <p className="booking-step-sub">{b.step2Sub}</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+              {staffList.map(s => (
+                <button
+                  key={s.id}
+                  className={`booking-staff-card${state.staff?.id === s.id ? ' selected' : ''}`}
+                  onClick={() => { pick('staff', s); goNext(3) }}
+                >
+                  <div className="booking-staff-avatar">
+                    {s.photo_url ? (
+                      <img src={s.photo_url} alt={s.name} className="w-full h-full object-cover" />
+                    ) : (
+                      <span>{s.name.split(' ').map(w => w[0]).slice(0, 2).join('')}</span>
+                    )}
+                  </div>
+                  <h3 className="text-[16px] font-bold text-[#1B3A4B]">{s.name}</h3>
+                </button>
+              ))}
+            </div>
+            <button className={`${S.btn} ${S.btnOutline}`} onClick={() => goBack(1)}>{b.back}</button>
+          </div>
+        )}
+
+        {/* Step 3 — Calendar */}
+        {step === 3 && (
+          <div>
+            <h2 className="booking-step-heading">{b.step3Heading}</h2>
+            <p className="booking-step-sub">{b.step3Sub}</p>
+            <div className="booking-calendar">
+              <div className="booking-calendar-nav">
+                <button
+                  className="booking-cal-nav-btn"
+                  onClick={() => setCalMonth(m => subMonths(m, 1))}
+                  disabled={isBefore(startOfMonth(subMonths(calMonth, 1)), startOfMonth(new Date()))}
+                >‹</button>
+                <span className="booking-cal-month">
+                  {format(calMonth, 'MMMM yyyy', { locale: dateLocale })}
+                </span>
+                <button
+                  className="booking-cal-nav-btn"
+                  onClick={() => setCalMonth(m => addMonths(m, 1))}
+                >›</button>
+              </div>
+              <div className="grid grid-cols-7 gap-1 mb-2">
+                {b.dayNames.map((d, i) => (
+                  <div key={i} className="text-center text-[11px] font-bold text-[#5a6475] py-1">{d}</div>
+                ))}
+              </div>
+              {loading ? (
+                <div className="booking-loading">{b.loading}</div>
+              ) : (
+                <CalendarGrid
+                  month={calMonth}
+                  availDays={availDays}
+                  selected={state.date}
+                  onSelect={date => { pick('date', date); pick('slot', null); goNext(4) }}
+                />
+              )}
+            </div>
+            <button className={`${S.btn} ${S.btnOutline}`} onClick={() => goBack(2)}>{b.back}</button>
+          </div>
+        )}
+
+        {/* Step 4 — Time slots */}
+        {step === 4 && state.date && (
+          <div>
+            <h2 className="booking-step-heading">{b.step4Heading}</h2>
+            <p className="booking-step-sub">
+              {format(state.date, 'EEEE, d MMMM yyyy', { locale: dateLocale })}
+              {' — '}
+              {b.svcNameMap[state.service?.name ?? ''] ?? state.service?.name}
+            </p>
             {loading ? (
-              <div className="text-center text-[#5a6475] py-8">{b.loading}</div>
+              <div className="booking-loading">{b.loading}</div>
+            ) : slots.length === 0 && busySlots.length === 0 ? (
+              <div className="text-center py-8">
+                <p className="text-[#5a6475] mb-4">{b.noSlots}</p>
+                <button className={`${S.btn} ${S.btnOutline}`} onClick={() => goBack(3)}>{b.pickOther}</button>
+              </div>
             ) : (
-              <CalendarGrid
-                month={calMonth}
-                availDays={availDays}
-                selected={state.date}
-                onSelect={date => { pick('date', date); pick('slot', null); setStep(4) }}
-              />
+              <>
+                {slots.length === 0 && busySlots.length > 0 && (
+                  <p className="text-[#5a6475] text-sm mb-4">{b.noSlots}</p>
+                )}
+                <div className="booking-slots">
+                  {[...slots, ...busySlots]
+                    .sort((a, bSlot) => a.localeCompare(bSlot))
+                    .map(slot => {
+                      const isBusy = busySlots.includes(slot)
+                      const isSel  = state.slot === slot
+                      return (
+                        <button
+                          key={slot}
+                          onClick={() => !isBusy && (pick('slot', slot), goNext(5))}
+                          disabled={isBusy}
+                          className={`booking-slot${isBusy ? ' busy' : isSel ? ' selected' : ''}`}
+                        >
+                          {format(parseISO(slot), 'HH:mm')}
+                          {isBusy && <span className="booking-slot-lock">🔒</span>}
+                        </button>
+                      )
+                    })}
+                </div>
+                <button className={`${S.btn} ${S.btnOutline}`} onClick={() => goBack(3)}>{b.back}</button>
+              </>
             )}
           </div>
+        )}
 
-          <button className={`${S.btn} ${S.btnOutline}`} onClick={() => setStep(2)}>{b.back}</button>
-        </div>
-      )}
-
-      {/* Step 4: Time slots */}
-      {step === 4 && state.date && (
-        <div>
-          <h2 className={S.stepHeading}>{b.step4Heading}</h2>
-          <p className={S.stepSub}>
-            {format(state.date, 'EEEE, d MMMM yyyy', { locale: dateLocale })} — {b.svcNameMap[state.service?.name ?? ''] ?? state.service?.name}
-          </p>
-
-          {loading ? (
-            <div className="text-center text-[#5a6475] py-8">{b.loading}</div>
-          ) : slots.length === 0 && busySlots.length === 0 ? (
-            <div className="text-center py-8">
-              <p className="text-[#5a6475] mb-4">{b.noSlots}</p>
-              <button className={`${S.btn} ${S.btnOutline}`} onClick={() => setStep(3)}>{b.pickOther}</button>
-            </div>
-          ) : (
-            <>
-              {slots.length === 0 && busySlots.length > 0 && (
-                <p className="text-[#5a6475] text-sm mb-4">{b.noSlots}</p>
-              )}
-              <div className="grid grid-cols-3 sm:grid-cols-4 gap-3 mb-6">
-                {[...slots, ...busySlots]
-                  .sort((a, b) => a.localeCompare(b))
-                  .map(slot => {
-                    const isBusy = busySlots.includes(slot)
-                    const isSelected = state.slot === slot
-                    return (
-                      <button
-                        key={slot}
-                        onClick={() => !isBusy && (pick('slot', slot), goNext(5))}
-                        disabled={isBusy}
-                        title={isBusy ? b.slotBusy : undefined}
-                        className={`py-3 rounded-lg text-[15px] font-semibold border-2 transition-all relative ${
-                          isBusy
-                            ? 'bg-[#f5f4f0] text-[#c8c5bd] border-[#ebe9e3] cursor-not-allowed'
-                            : isSelected
-                            ? 'bg-[#C9A96E] text-white border-[#C9A96E]'
-                            : 'bg-white text-[#1B3A4B] border-[#e2e0da] hover:border-[#C9A96E] hover:text-[#C9A96E]'
-                        }`}
-                      >
-                        <span className={isBusy ? 'opacity-50' : ''}>{format(parseISO(slot), 'HH:mm')}</span>
-                        {isBusy && (
-                          <span className="block text-[10px] font-medium text-[#bbb] leading-none mt-0.5">🔒</span>
-                        )}
-                      </button>
-                    )
-                  })}
+        {/* Step 5 — Contact details */}
+        {step === 5 && (
+          <div>
+            <h2 className="booking-step-heading">{b.step5Heading}</h2>
+            <p className="booking-step-sub">
+              {b.svcNameMap[state.service?.name ?? ''] ?? state.service?.name}
+              {' · '}{state.staff?.name}
+              {' · '}{state.date && format(state.date, 'd MMM', { locale: dateLocale })}
+              {' · '}{state.slot && format(parseISO(state.slot), 'HH:mm')}
+            </p>
+            <div className="space-y-4 mb-6">
+              <div>
+                <label className={S.label}>{b.formName}</label>
+                <input className={S.input} type="text" autoComplete="name"
+                  value={state.name} onChange={e => pick('name', e.target.value)}
+                  style={errors.name ? { borderColor: '#e05555' } : {}} />
+                {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
               </div>
-              {slots.length > 0 && (
-                <button className={`${S.btn} ${S.btnOutline}`} onClick={() => setStep(3)}>{b.back}</button>
-              )}
-              {slots.length === 0 && (
-                <button className={`${S.btn} ${S.btnOutline}`} onClick={() => setStep(3)}>{b.pickOther}</button>
-              )}
-            </>
-          )}
-        </div>
-      )}
-
-      {/* Step 5: Customer details */}
-      {step === 5 && (
-        <div>
-          <h2 className={S.stepHeading}>{b.step5Heading}</h2>
-          <p className={S.stepSub}>
-            {b.svcNameMap[state.service?.name ?? ''] ?? state.service?.name} · {state.staff?.name} ·{' '}
-            {state.date && format(state.date, 'd MMM', { locale: dateLocale })} ·{' '}
-            {state.slot && format(parseISO(state.slot), 'HH:mm')}
-          </p>
-
-          <div className="space-y-4 mb-6">
-            <div>
-              <label className={S.label}>{b.formName}</label>
-              <input
-                className={S.input}
-                type="text" autoComplete="name"
-                value={state.name}
-                onChange={e => pick('name', e.target.value)}
-                style={errors.name ? { borderColor: '#e05555' } : {}}
-              />
-              {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
+              <div>
+                <label className={S.label}>{b.formPhone}</label>
+                <input className={S.input} type="tel" autoComplete="tel"
+                  value={state.phone} onChange={e => pick('phone', e.target.value)}
+                  style={errors.phone ? { borderColor: '#e05555' } : {}} />
+                {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
+              </div>
+              <div>
+                <label className={S.label}>{b.formEmail}</label>
+                <input className={S.input} type="email" autoComplete="email"
+                  value={state.email} onChange={e => pick('email', e.target.value)}
+                  style={errors.email ? { borderColor: '#e05555' } : {}} />
+                {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
+              </div>
+              <div>
+                <label className={S.label}>{b.formNotes}</label>
+                <textarea className={`${S.input} resize-y min-h-[80px]`}
+                  value={state.notes} onChange={e => pick('notes', e.target.value)} />
+              </div>
             </div>
-            <div>
-              <label className={S.label}>{b.formPhone}</label>
-              <input
-                className={S.input}
-                type="tel" autoComplete="tel"
-                value={state.phone}
-                onChange={e => pick('phone', e.target.value)}
-                style={errors.phone ? { borderColor: '#e05555' } : {}}
-              />
-              {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
-            </div>
-            <div>
-              <label className={S.label}>{b.formEmail}</label>
-              <input
-                className={S.input}
-                type="email" autoComplete="email"
-                value={state.email}
-                onChange={e => pick('email', e.target.value)}
-                style={errors.email ? { borderColor: '#e05555' } : {}}
-              />
-              {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
-            </div>
-            <div>
-              <label className={S.label}>{b.formNotes}</label>
-              <textarea
-                className={`${S.input} resize-y min-h-[80px]`}
-                value={state.notes}
-                onChange={e => pick('notes', e.target.value)}
-              />
+            {errors.submit && (
+              <div className="bg-red-50 border border-red-200 text-red-700 rounded-lg px-4 py-3 mb-4 text-sm">
+                {errors.submit}
+              </div>
+            )}
+            <div className="flex gap-3">
+              <button className={`${S.btn} ${S.btnOutline}`} onClick={() => goBack(4)}>{b.back}</button>
+              <button className={`${S.btn} ${S.btnPrimary} flex-1`} onClick={submitBooking} disabled={loading}>
+                {loading ? b.loading : b.submitBtn}
+              </button>
             </div>
           </div>
+        )}
 
-          {errors.submit && (
-            <div className="bg-red-50 border border-red-200 text-red-700 rounded-lg px-4 py-3 mb-4 text-sm">
-              {errors.submit}
+        {/* Step 6 — Success */}
+        {step === 6 && (
+          <div className="booking-success">
+            <div className="booking-success-icon">
+              <svg viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle className="booking-success-circle" cx="26" cy="26" r="25" stroke="#C9A96E" strokeWidth="2"/>
+                <polyline className="booking-success-check" points="14,27 22,35 38,18" stroke="#C9A96E" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
             </div>
-          )}
-
-          <div className="flex gap-3">
-            <button className={`${S.btn} ${S.btnOutline}`} onClick={() => setStep(4)}>{b.back}</button>
-            <button
-              className={`${S.btn} ${S.btnPrimary} flex-1`}
-              onClick={submitBooking}
-              disabled={loading}
-            >
-              {loading ? b.loading : b.submitBtn}
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Step 6: Success */}
-      {step === 6 && (
-        <div className="text-center py-8">
-          <div className="w-20 h-20 bg-[rgba(201,169,110,.12)] rounded-full flex items-center justify-center mx-auto mb-6">
-            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#C9A96E" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="20 6 9 17 4 12"/>
-            </svg>
-          </div>
-          <h2 className="text-[26px] font-bold text-[#1B3A4B] mb-2">{b.successTitle}</h2>
-          <p className="text-[#5a6475] mb-8">{b.successSub}</p>
-
-          <div className="bg-[#F0EFEB] rounded-[12px] p-6 text-left mb-8 max-w-sm mx-auto">
-            <div className="space-y-3">
+            <h2 className="booking-success-title">{b.successTitle}</h2>
+            <p className="booking-success-sub">{b.successSub}</p>
+            <div className="booking-summary-card">
               {[
                 ...(bookingId ? [[b.summaryRef, `#${bookingId.slice(0, 8).toUpperCase()}`]] : []),
                 [b.summaryService, b.svcNameMap[state.service?.name ?? ''] ?? state.service?.name],
@@ -433,22 +404,22 @@ export default function BookingWidget() {
                 [b.summaryTime,    state.slot ? format(parseISO(state.slot), 'HH:mm') : ''],
                 [b.summaryEmail,   state.email],
               ].map(([label, value]) => (
-                <div key={label} className="flex justify-between gap-4">
-                  <span className="text-[12px] font-bold text-[#C9A96E] uppercase tracking-wider">{label}</span>
-                  <span className="text-[14px] font-semibold text-[#1B3A4B] text-right">{value}</span>
+                <div key={label} className="booking-summary-row">
+                  <span className="booking-summary-label">{label}</span>
+                  <span className="booking-summary-value">{value}</span>
                 </div>
               ))}
             </div>
+            <button
+              className={`${S.btn} ${S.btnOutline}`}
+              onClick={() => { setState(INITIAL); setDir('fwd'); setStep(1); setBookingId(null) }}
+            >
+              {b.bookAnother}
+            </button>
           </div>
+        )}
 
-          <button
-            className={`${S.btn} ${S.btnOutline}`}
-            onClick={() => { setState(INITIAL); setStep(1); setBookingId(null) }}
-          >
-            {b.bookAnother}
-          </button>
-        </div>
-      )}
+      </div>
     </div>
   )
 }
@@ -481,19 +452,14 @@ function CalendarGrid({
         const isPast  = isBefore(startOfDay(date), startOfDay(today))
         const isAvail = availDays.includes(day)
         const isSel   = selected ? isSameDay(date, selected) : false
+        const isToday = isSameDay(date, today)
 
         return (
           <button
             key={i}
             onClick={() => isAvail && onSelect(date)}
             disabled={isPast || !isAvail}
-            className={`aspect-square rounded-lg text-[14px] font-semibold transition-all ${
-              isSel
-                ? 'bg-[#C9A96E] text-white'
-                : isPast || !isAvail
-                ? 'text-[#c8c5bd] cursor-default'
-                : 'text-[#1B3A4B] hover:bg-[rgba(201,169,110,.15)] hover:text-[#C9A96E]'
-            }`}
+            className={`booking-cal-day${isSel ? ' selected' : isPast || !isAvail ? ' disabled' : isToday ? ' today' : ' avail'}`}
           >
             {day}
           </button>

@@ -34,22 +34,19 @@ export async function POST(req: NextRequest) {
   const endISO = end.toISOString()
 
   // Check that the slot is still available (race condition guard)
-  const dayStr   = startTime.substring(0, 10)
-  const dayStart = `${dayStr}T00:00:00+00:00`
-  const dayEnd   = `${dayStr}T23:59:59+00:00`
-
   const { data: conflicts } = await supabase
     .from('bookings')
-    .select('id')
+    .select('start_time, end_time')
     .eq('staff_id', staffId)
     .eq('status', 'confirmed')
-    .gte('start_time', dayStart)
-    .lte('start_time', dayEnd)
+
+  const newStart = new Date(startTime)
+  const newEnd   = new Date(endISO)
 
   const overlapping = (conflicts || []).some(c => {
-    // We don't have c.start/end here — just a quick check
-    // A more thorough check is done client-side; this catches obvious double-books
-    return false
+    const cStart = new Date(c.start_time)
+    const cEnd   = new Date(c.end_time)
+    return newStart < cEnd && newEnd > cStart
   })
 
   if (overlapping) {
@@ -85,16 +82,14 @@ export async function POST(req: NextRequest) {
     .eq('id', staffId)
     .single()
 
-  // Send emails (non-blocking — don't fail the request if email fails)
+  // Send emails independently so one failure doesn't block the other
   if (staff) {
-    try {
-      await Promise.all([
-        sendCustomerConfirmation(booking, staff, service),
-        sendStaffNotification(booking, staff, service),
-      ])
-    } catch (emailErr) {
-      console.error('Email send error (non-fatal):', emailErr)
-    }
+    await sendCustomerConfirmation(booking, staff, service).catch(err =>
+      console.error('Customer email error:', err)
+    )
+    await sendStaffNotification(booking, staff, service).catch(err =>
+      console.error('Staff email error:', err)
+    )
   }
 
   return NextResponse.json({ booking }, { status: 201 })

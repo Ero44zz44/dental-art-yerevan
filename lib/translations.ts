@@ -21,7 +21,7 @@ export const T = {
       cta:         'Գրանցվել ընդունման',
       ctaServices: 'Մեր ծառայությունները',
       statYears:    'Փորձ',
-      statPatients: 'Հիվանդ',
+      statPatients: 'Հաճախորդ',
       statServices: 'Ծառայություն',
     },
     infoBar: {
@@ -50,9 +50,10 @@ export const T = {
     ],
     about: {
       label:       'Մեր մասին',
+      doctorName:  'Բժ. Արմեն Հակոբյան',
       doctorTitle: 'Գլխավոր ատամնաբույժ, Dental Art Yerevan',
-      bio:         'Ատամնաբուժության ոլորտում ավելի քան 15 տարվա փորձ ունեցող դոկտոր Հակոբյանը հիմնել է Dental Art Yerevan-ը՝ պարզ նպատակով. ապահովել ազնիվ, հոգատար և բարձրակարգ ատամնաբուժական խնամք Երևանի համայնքի համար:',
-      quote:       'Իմ նպատակն է ամեն հիվանդի օգնել ինքնավստահ լինել իր ժպիտին:',
+      bio:         'Ատամնաբուժության ոլորտում ավելի քան 15 տարվա փորձ ունեցող դոկտոր Հակոբյանը հիմնել է Dental Art Yerevan-ը՝ պարզ նպատակով. ապահովել ազնիվ, հոգատար և մասնագիտական ատամնաբուժական խնամք Երևանի համայնքի համար:',
+      quote:       'Իմ նպատակն է ամեն հաճախորդի օգնել ինքնավստահ լինել իր ժպիտի մեջ:',
       cta:         'Գրանցվել խորհրդատվության',
     },
     contact: {
@@ -78,6 +79,25 @@ export const T = {
       successTitle: 'Շնորհակալություն:',
       successText:  'Ձեր հաղորդագրությունն ուղարկված է: Մենք կապ կհաստատենք ձեզ հետ շուտով:',
       services: ['Ատամների մաքրում', 'Ատամների սպիտակեցում', 'Ատամնային իմպլանտներ', 'Ուղղաբուժություն', 'Կերամիկական վինիրներ', 'Շտապ ատամնաբուժություն', 'Այլ'],
+    },
+    whyUs: {
+      label:   'Ինչու՞ մենք',
+      heading: 'Ինչու՞ ընտրել Dental Art Yerevan-ը',
+      items: [
+        { num: '15+', label: 'Տարիների փորձ', desc: 'Ատամնաբուժության ոլորտում 15 տարուց ավելի փորձ՝ ձեզ վստահ ձեռքերով ապահովելու համար:' },
+        { num: '3K+', label: 'Բավարարված հաճախորդ', desc: 'Ավելի քան 3000 հաճախորդ, ովքեր վստահում են մեզ իրենց ժպիտը:' },
+        { num: '100%', label: 'Ժամանակակից սարքավորում', desc: 'Թվային ռենտգեն, 3D սկան, ամբողջ կլինիկան հագեցած է ամենավերջին տեխնոլոգիաներով:' },
+        { num: '6',   label: 'Ծառայություն', desc: 'Ատամների մաքրումից մինչև իմպլանտ — բոլոր ծառայությունները մեկ տեղում:' },
+      ],
+    },
+    testimonials: {
+      label:   'Կարծիքներ',
+      heading: 'Հաճախորդներն ասում են',
+      items: [
+        { name: 'Անի Սահակյան', role: 'Կանոնավոր հաճախորդ', text: 'Dental Art Yerevan-ը փոխեց իմ վերաբերմունքը ատամնաբուժության նկատմամբ: Բժիշկ Հակոբյանը շատ ուշադիր և ջերմ է: Ատամների սպիտակեցումից հետո ժպիտս բոլորովին այլ է:' },
+        { name: 'Արամ Պետրոսյան', role: 'Իմպլանտ, 2024', text: 'Ատամի ամբողջ ընթացակարգն անցավ անցավ: Բժիշկն ու թիմը շատ մասնագիտական են, ամեն ինչ բացատրում են: Ամուր առաջարկում եմ:' },
+        { name: 'Մարիամ Ավետիսյան', role: 'Ուղղաբուժություն', text: 'Երկու տարի հետևեցի ատամների ուղղաբուժությանը Dental Art-ում: Արդյունքը գերազանցեց սպասելիքներս: Ջերմ մթնոլորտ, պրոֆեսիոնալ թիմ:' },
+      ],
     },
     booking: {
       step1Heading:   'Ընտրեք ծառայությունը',
@@ -177,6 +197,7 @@ export const T = {
     ],
     about: {
       label:       'About Us',
+      doctorName:  'Dr. Armen Hakobyan',
       doctorTitle: 'Lead Dentist, Dental Art Yerevan',
       bio:         'With over 15 years of experience in dentistry, Dr. Hakobyan founded Dental Art Yerevan with one clear mission: to provide honest, caring and world-class dental care for the Yerevan community.',
       quote:       'My goal is to help every patient feel confident in their smile.',
@@ -205,6 +226,25 @@ export const T = {
       successTitle: 'Thank you!',
       successText:  'Your message has been sent. We will get in touch with you shortly.',
       services: ['Teeth Cleaning', 'Teeth Whitening', 'Dental Implants', 'Orthodontics', 'Ceramic Veneers', 'Emergency Dentistry', 'Other'],
+    },
+    whyUs: {
+      label:   'Why Us',
+      heading: 'Why choose Dental Art Yerevan',
+      items: [
+        { num: '15+', label: 'Years of experience', desc: 'Over 15 years of expertise in dentistry — your smile is in safe hands.' },
+        { num: '3K+', label: 'Satisfied patients', desc: 'More than 3,000 patients trust us with their smiles.' },
+        { num: '100%', label: 'Modern equipment', desc: 'Digital X-ray, 3D scanning — the clinic is equipped with the latest technology.' },
+        { num: '6',   label: 'Services', desc: 'From teeth cleaning to implants — all services under one roof.' },
+      ],
+    },
+    testimonials: {
+      label:   'Testimonials',
+      heading: 'What patients say',
+      items: [
+        { name: 'Ani Sahakyan', role: 'Regular patient', text: 'Dental Art Yerevan changed how I feel about dental visits. Dr. Hakobyan is attentive and warm. After teeth whitening my smile is completely transformed.' },
+        { name: 'Aram Petrosyan', role: 'Implant, 2024', text: 'The whole procedure was pain-free. The doctor and team are very professional, they explain everything clearly. Highly recommended.' },
+        { name: 'Mariam Avetisyan', role: 'Orthodontics', text: 'I followed my orthodontic treatment at Dental Art for two years. The result exceeded my expectations. A warm atmosphere and a professional team.' },
+      ],
     },
     booking: {
       step1Heading:   'Choose a Service',
@@ -304,6 +344,7 @@ export const T = {
     ],
     about: {
       label:       'О нас',
+      doctorName:  'Д-р Армен Акобян',
       doctorTitle: 'Главный стоматолог, Dental Art Yerevan',
       bio:         'Имея более 15 лет опыта в стоматологии, доктор Акобян основал Dental Art Yerevan с одной ясной целью — обеспечить честную, заботливую и высококлассную стоматологическую помощь жителям Еревана.',
       quote:       'Моя цель — помочь каждому пациенту чувствовать себя уверенно благодаря своей улыбке.',
@@ -332,6 +373,25 @@ export const T = {
       successTitle: 'Спасибо!',
       successText:  'Ваше сообщение отправлено. Мы свяжемся с вами в ближайшее время.',
       services: ['Чистка зубов', 'Отбеливание зубов', 'Зубные импланты', 'Ортодонтия', 'Керамические виниры', 'Экстренная стоматология', 'Другое'],
+    },
+    whyUs: {
+      label:   'Почему мы',
+      heading: 'Почему выбирают Dental Art Yerevan',
+      items: [
+        { num: '15+', label: 'Лет опыта', desc: 'Более 15 лет опыта в стоматологии — ваша улыбка в надёжных руках.' },
+        { num: '3K+', label: 'Довольных пациентов', desc: 'Более 3000 пациентов доверяют нам свою улыбку.' },
+        { num: '100%', label: 'Современное оборудование', desc: 'Цифровой рентген, 3D-сканирование — клиника оснащена новейшими технологиями.' },
+        { num: '6',   label: 'Услуг', desc: 'От чистки зубов до имплантов — все услуги под одной крышей.' },
+      ],
+    },
+    testimonials: {
+      label:   'Отзывы',
+      heading: 'Что говорят пациенты',
+      items: [
+        { name: 'Ани Саакян', role: 'Постоянный пациент', text: 'Dental Art Yerevan изменил моё отношение к стоматологии. Доктор Акобян очень внимателен и заботлив. После отбеливания моя улыбка полностью преобразилась.' },
+        { name: 'Арам Петросян', role: 'Имплант, 2024', text: 'Вся процедура прошла безболезненно. Доктор и команда очень профессиональны, всё подробно объясняют. Настоятельно рекомендую.' },
+        { name: 'Мариам Аветисян', role: 'Ортодонтия', text: 'Два года наблюдалась по поводу ортодонтии в Dental Art. Результат превзошёл ожидания. Тёплая атмосфера и профессиональная команда.' },
+      ],
     },
     booking: {
       step1Heading:   'Выберите услугу',

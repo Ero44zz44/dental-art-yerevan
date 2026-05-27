@@ -93,6 +93,51 @@ Armenia is **permanently UTC+4** (no DST).
 
 ---
 
+## Armenian Translation Rules
+
+Use **modern spoken Eastern Armenian (Yerevan dialect)** — not literary/formal Armenian. Write the way a real Yerevan business owner would write it: direct, conversational, short sentences.
+
+### Correct vocabulary
+
+| English | ❌ Don't use | ✅ Use this |
+|---------|-------------|------------|
+| Book appointment | Կատարել ամրագրում | Գրանցվել |
+| Contact us | Կապ հաստատել | Կապվել մեզ հետ |
+| Get in touch | Հաղորդակցվել | Կապ հաստատեք |
+| Our services | Մեր ծառայությունները | Մեր ծառայությունները |
+| Learn more | Ավելին իմանալ | Իմանալ ավելին |
+| Send message | Ուղղարկել | Ուղարկել |
+| Working hours | Աշխատաժամեր | Աշխատանքային ժամեր |
+| Appointment | Ամրագրում | Ժամադրություն |
+| Patient | Հիվանդ | Հաճախորդ |
+| Treatment | Բուժում | Բուժում (ok) |
+| Price / Cost | Արժեք | Գին |
+| Free consultation | Անվճար խորհրդատվություն | Անվճար խորհրդատվություն (ok) |
+| Call us | Զանգ կատարել | Զանգահարեք |
+| Address | Հասցե | Հասցե (ok) |
+| Thank you | Շնորհակալություն | Շնորհակալություն (ok, but keep short) |
+| Welcome | Բարի գալուստ | Բարի եկաք |
+| Confirm | Հաստատել | Հաստատել (ok) |
+| Cancel | Չեղարկել | Չեղարկել (ok) |
+| Back | Հետ | Վերադառնալ |
+| Choose | Ընտրություն կատարել | Ընտրեք |
+| Our doctor | Մեր բժիշկը | Մեր բժիշկը (ok) |
+
+### Banned words (sound robotic/AI-translated)
+- **Իրականացնել** — use a simpler verb instead
+- **Բարձրորակ** — overused filler, cut it
+- **Մատուցել** — too formal for web copy
+- **Համակարգված** — sounds Soviet-era formal
+
+### Tone rules
+- Short sentences — max 15 words per sentence in UI copy
+- Active voice always
+- No "we strive to..." type phrases — just state the fact
+- Numbers stay as digits (15 not spelled out)
+- Brand name stays as "Dental Art Yerevan" (not translated)
+
+---
+
 ## Multilingual (i18n)
 All UI text is in `lib/translations.ts` — three top-level keys: `hy`, `en`, `ru`.
 The `booking` section of each language includes:
