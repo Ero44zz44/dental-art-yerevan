@@ -13,6 +13,7 @@ Load the right skill automatically based on what's being done — don't wait for
 | `lighthouse` | After deploying — audit performance ≥80, accessibility ≥90, SEO ≥90 |
 | `vercel-deploy` | Troubleshooting deployments, configuring env vars, or build errors |
 | `output-skill` | Generating large files — prevents truncated or placeholder output |
+| `ui-ux-pro-max-skill` | Design system decisions — run `search.py` for style/color/typography/UX recommendations |
 
 ## What this project is
 A Next.js 14 website for **Dental Art Yerevan**, a dental clinic in Yerevan, Armenia.
@@ -73,8 +74,8 @@ GitHub: https://github.com/Ero44zz44/dental-art-yerevan
 ## Design system
 Colors are CSS custom properties defined in `app/globals.css`:
 - `--primary: #1B3A4B` (dark teal)
-- `--accent: #C9A96E` (gold)
-- `--bg: #FAFAF8`, `--section-bg: #F2F0EC`
+- `--accent: #6B9FA0` (sage teal — replaced gold `#C9A96E` in the redesign)
+- `--bg: #F7FAFA`, `--section-bg: #EDF2F2`
 
 Fonts loaded via Google Fonts `<link>` in `app/layout.tsx`:
 - Brand: DM Serif Display (`--font-brand`)
@@ -196,7 +197,7 @@ Key animation patterns already in place:
 - Mobile menu: `.mobile-menu-overlay` uses `visibility + transform: translateX(100%)` — NOT `display:none` — so the CSS transition works
 - Hamburger → X morph: `.hamburger.is-open span:nth-child(n)` CSS transforms (no separate close button)
 - Button shimmer: `.btn-primary::before` pseudo-element with `btn-shimmer` keyframes, loops every 3.8s
-- Hero rings: `#hero::before` and `::after` with `ring-breathe` keyframes (5s, offset by 2.5s)
+- Hero aurora: `#hero::before` and `::after` are large blurred radial-gradient blobs with `aurora-drift-1/2` keyframes (14s/18s) — NOT ring outlines
 - Floating doctor: `.about-image-wrap.visible` with `float-gentle` keyframes (5s infinite)
 - Scroll-triggered line draw: `.section-label::before` scales from 0→1 when `.fade-in-up.visible` is applied by IntersectionObserver
 
