@@ -404,10 +404,11 @@ export default function HomePage() {
               <Image
                 src="/hero-image.png"
                 alt="Dental Art Yerevan — professional dental care"
-                width={620}
-                height={620}
+                width={1433}
+                height={1920}
                 priority
-                sizes="(max-width:768px) 100vw, 50vw"
+                quality={90}
+                sizes="(max-width:768px) 100vw, (max-width:1280px) 55vw, 720px"
                 style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', inset: 0 }}
               />
             </motion.div>
@@ -512,7 +513,8 @@ export default function HomePage() {
                       alt={svc.title}
                       fill
                       loading="lazy"
-                      sizes="(max-width:768px) 100vw, (max-width:1024px) 50vw, 33vw"
+                      quality={90}
+                      sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 420px"
                       style={{ objectFit: 'cover' }}
                     />
                   ) : (
@@ -554,9 +556,10 @@ export default function HomePage() {
               <Image
                 src="/doctor-armen.png"
                 alt="Dr. Armen Hakobyan"
-                width={520}
-                height={580}
-                sizes="(max-width:768px) 100vw, 45vw"
+                width={1433}
+                height={1920}
+                quality={90}
+                sizes="(max-width:768px) 100vw, (max-width:1280px) 50vw, 600px"
                 style={{ width: '100%', height: 'auto', borderRadius: 'var(--radius)', display: 'block' }}
               />
             </motion.div>
