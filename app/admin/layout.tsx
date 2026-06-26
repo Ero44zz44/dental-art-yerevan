@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase'
@@ -45,6 +45,9 @@ const NAV = [
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const router   = useRouter()
+  const [menuOpen, setMenuOpen] = useState(false)
+
+  useEffect(() => { setMenuOpen(false) }, [pathname])
 
   async function logout() {
     const supabase = createClient()
@@ -53,20 +56,30 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     router.refresh()
   }
 
+  if (pathname === '/admin/login') return <>{children}</>
+
   return (
     <div style={{ display: 'flex', minHeight: '100vh', background: '#f8f8f6' }}>
+      {/* Mobile top bar */}
+      <div className="admin-mobile-topbar">
+        <button className="admin-hamburger" onClick={() => setMenuOpen(true)} aria-label="Open menu">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'white', textDecoration: 'none' }}>
+          <svg width="22" height="22" viewBox="0 0 32 32" fill="none" style={{ color: 'var(--accent)' }}>
+            <path d="M16 3C11 3 7 7 7 12c0 2.5.8 5.2 2.2 7.8L12 28h8l2.8-8.2C24.2 17.2 25 14.5 25 12c0-5-4-9-9-9z" stroke="currentColor" strokeWidth="1.8" fill="none" strokeLinejoin="round"/>
+            <path d="M13 12c0-1.7 1.3-3 3-3s3 1.3 3 3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/>
+          </svg>
+          <span style={{ fontFamily: 'var(--font-brand)', fontSize: 15 }}>Dental Art</span>
+        </Link>
+        <div style={{ width: 36 }} />
+      </div>
+
+      {/* Backdrop (mobile only, when drawer open) */}
+      <div className={`admin-sidebar-backdrop${menuOpen ? ' open' : ''}`} onClick={() => setMenuOpen(false)} />
+
       {/* Sidebar */}
-      <aside style={{
-        width: 220,
-        background: 'var(--primary)',
-        color: 'white',
-        display: 'flex',
-        flexDirection: 'column',
-        position: 'fixed',
-        top: 0, left: 0, bottom: 0,
-        zIndex: 100,
-        flexShrink: 0,
-      }}>
+      <aside className={`admin-sidebar${menuOpen ? ' open' : ''}`}>
         {/* Logo */}
         <div style={{ padding: '24px 20px 16px', borderBottom: '1px solid rgba(255,255,255,.1)' }}>
           <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'white', textDecoration: 'none' }}>
@@ -144,7 +157,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       </aside>
 
       {/* Main content */}
-      <main style={{ marginLeft: 220, flex: 1, padding: '32px 36px', minWidth: 0 }}>
+      <main className="admin-main">
         {children}
       </main>
     </div>

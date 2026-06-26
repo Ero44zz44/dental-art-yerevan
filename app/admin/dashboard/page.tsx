@@ -67,7 +67,7 @@ export default function DashboardPage() {
       <p style={{ color: 'var(--text-light)', marginBottom: 32 }}>{format(new Date(), 'EEEE, d MMMM yyyy')}</p>
 
       {/* Stat cards */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20, marginBottom: 40 }}>
+      <div className="admin-stat-grid">
         {[
           {
             label: 'Today', value: loading ? '–' : todayBookings.length, color: 'var(--primary)',
@@ -108,45 +108,74 @@ export default function DashboardPage() {
         ) : todayBookings.length === 0 ? (
           <p style={{ padding: 24, color: 'var(--text-light)' }}>No appointments today.</p>
         ) : (
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-            <thead>
-              <tr style={{ borderBottom: '1px solid var(--border)' }}>
-                {['Time', 'Patient', 'Phone', 'Service', 'Doctor', 'Action'].map(h => (
-                  <th key={h} style={{ padding: '12px 16px', textAlign: 'left', fontSize: 12, fontWeight: 700, color: 'var(--text-light)', textTransform: 'uppercase', letterSpacing: '.06em' }}>{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
+          <>
+            {/* Desktop table */}
+            <div className="admin-table-desktop admin-table-wrap">
+              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                <thead>
+                  <tr style={{ borderBottom: '1px solid var(--border)' }}>
+                    {['Time', 'Patient', 'Phone', 'Service', 'Doctor', 'Action'].map(h => (
+                      <th key={h} style={{ padding: '12px 16px', textAlign: 'left', fontSize: 12, fontWeight: 700, color: 'var(--text-light)', textTransform: 'uppercase', letterSpacing: '.06em' }}>{h}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {todayBookings.map(b => (
+                    <tr key={b.id} style={{ borderBottom: '1px solid #f0efeb' }}>
+                      <td style={{ padding: '14px 16px', fontSize: 14, fontWeight: 700, color: 'var(--primary)', whiteSpace: 'nowrap' }}>
+                        {format(new Date(b.start_time), 'HH:mm')}
+                      </td>
+                      <td style={{ padding: '14px 16px', fontSize: 14 }}>
+                        <div style={{ fontWeight: 600 }}>{b.customer_name}</div>
+                        <div style={{ fontSize: 12, color: 'var(--text-light)' }}>{b.customer_email}</div>
+                      </td>
+                      <td style={{ padding: '14px 16px', fontSize: 14 }}>
+                        <a href={`tel:${b.customer_phone}`} style={{ color: 'var(--primary)' }}>{b.customer_phone}</a>
+                      </td>
+                      <td style={{ padding: '14px 16px', fontSize: 14 }}>
+                        {(b as any).service?.name || '—'}
+                      </td>
+                      <td style={{ padding: '14px 16px', fontSize: 14 }}>
+                        {(b as any).staff?.name || '—'}
+                      </td>
+                      <td style={{ padding: '14px 16px' }}>
+                        <button
+                          onClick={() => cancelBooking(b.id)}
+                          style={{ fontSize: 12, color: '#dc2626', border: 'none', cursor: 'pointer', fontWeight: 600, padding: '4px 8px', borderRadius: 6, background: '#fee2e2' }}
+                        >
+                          Cancel
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobile card list */}
+            <div className="admin-booking-cards" style={{ padding: 16 }}>
               {todayBookings.map(b => (
-                <tr key={b.id} style={{ borderBottom: '1px solid #f0efeb' }}>
-                  <td style={{ padding: '14px 16px', fontSize: 14, fontWeight: 700, color: 'var(--primary)', whiteSpace: 'nowrap' }}>
-                    {format(new Date(b.start_time), 'HH:mm')}
-                  </td>
-                  <td style={{ padding: '14px 16px', fontSize: 14 }}>
-                    <div style={{ fontWeight: 600 }}>{b.customer_name}</div>
-                    <div style={{ fontSize: 12, color: 'var(--text-light)' }}>{b.customer_email}</div>
-                  </td>
-                  <td style={{ padding: '14px 16px', fontSize: 14 }}>
-                    <a href={`tel:${b.customer_phone}`} style={{ color: 'var(--primary)' }}>{b.customer_phone}</a>
-                  </td>
-                  <td style={{ padding: '14px 16px', fontSize: 14 }}>
-                    {(b as any).service?.name || '—'}
-                  </td>
-                  <td style={{ padding: '14px 16px', fontSize: 14 }}>
-                    {(b as any).staff?.name || '—'}
-                  </td>
-                  <td style={{ padding: '14px 16px' }}>
+                <div key={b.id} style={{ border: '1px solid var(--border)', borderRadius: 10, padding: 14 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
+                    <div>
+                      <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--primary)' }}>{format(new Date(b.start_time), 'HH:mm')}</div>
+                      <div style={{ fontSize: 14, fontWeight: 600, marginTop: 2 }}>{b.customer_name}</div>
+                    </div>
                     <button
                       onClick={() => cancelBooking(b.id)}
-                      style={{ fontSize: 12, color: '#dc2626', border: 'none', cursor: 'pointer', fontWeight: 600, padding: '4px 8px', borderRadius: 6, background: '#fee2e2' }}
+                      style={{ fontSize: 12, color: '#dc2626', border: 'none', cursor: 'pointer', fontWeight: 600, padding: '6px 10px', borderRadius: 6, background: '#fee2e2', flexShrink: 0 }}
                     >
                       Cancel
                     </button>
-                  </td>
-                </tr>
+                  </div>
+                  <div style={{ fontSize: 13, color: 'var(--text-light)', display: 'flex', flexDirection: 'column', gap: 2 }}>
+                    <a href={`tel:${b.customer_phone}`} style={{ color: 'var(--primary)' }}>{b.customer_phone}</a>
+                    <span>{(b as any).service?.name || '—'} · {(b as any).staff?.name || '—'}</span>
+                  </div>
+                </div>
               ))}
-            </tbody>
-          </table>
+            </div>
+          </>
         )}
       </div>
     </div>

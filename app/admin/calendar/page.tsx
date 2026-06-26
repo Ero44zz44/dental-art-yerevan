@@ -162,17 +162,23 @@ export default function CalendarPage() {
           content: ''; position: absolute; left: -4px; top: -4px;
           width: 10px; height: 10px; border-radius: 50%; background: #dc2626;
         }
+        .cal-toolbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
+        .cal-toolbar-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+        .cal-grid-row { display: grid; grid-template-columns: 56px repeat(7, 1fr); }
+        @media (max-width: 900px) {
+          .cal-grid-row { min-width: 700px; }
+        }
       `}</style>
 
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
+      <div className="cal-toolbar">
         <div>
           <h1 style={{ fontSize: 26, fontFamily: 'var(--font-heading-hy)', color: 'var(--primary)', marginBottom: 4 }}>Calendar</h1>
           <p style={{ color: 'var(--text-light)', fontSize: 14 }}>
             {format(weekStart, 'd MMM')} – {format(addDays(weekStart, 6), 'd MMM yyyy')}
           </p>
         </div>
-        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+        <div className="cal-toolbar-actions">
           <button onClick={() => setWeekStart(w => subWeeks(w, 1))} className="cal-nav-btn">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="15 18 9 12 15 6"/></svg>
             Prev
@@ -200,7 +206,7 @@ export default function CalendarPage() {
       ) : (
         <div style={{ background: 'white', borderRadius: 12, boxShadow: '0 2px 8px rgba(0,0,0,.06)', overflow: 'auto' }}>
           {/* Day headers */}
-          <div style={{ display: 'grid', gridTemplateColumns: '56px repeat(7, 1fr)', borderBottom: '2px solid var(--border)', position: 'sticky', top: 0, background: 'white', zIndex: 20 }}>
+          <div className="cal-grid-row" style={{ borderBottom: '2px solid var(--border)', position: 'sticky', top: 0, background: 'white', zIndex: 20 }}>
             <div />
             {weekDays.map(day => {
               const isToday   = isSameDay(day, now)
@@ -230,7 +236,7 @@ export default function CalendarPage() {
 
           {/* Hour rows */}
           {HOURS.map(hour => (
-            <div key={hour} style={{ display: 'grid', gridTemplateColumns: '56px repeat(7, 1fr)', borderBottom: '1px solid #f0efeb', minHeight: ROW_H }}>
+            <div key={hour} className="cal-grid-row" style={{ borderBottom: '1px solid #f0efeb', minHeight: ROW_H }}>
               <div style={{ padding: '8px 8px 0', fontSize: 11, color: '#bbb', fontWeight: 600, textAlign: 'right', lineHeight: 1 }}>
                 {hour}:00
               </div>

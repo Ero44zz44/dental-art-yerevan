@@ -56,9 +56,9 @@ export default function ServicesPage() {
   const showForm = isNew || !!editing
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: showForm ? '1fr 360px' : '1fr', gap: 24 }}>
+    <div className="admin-split-grid" style={{ gridTemplateColumns: showForm ? '1fr 360px' : '1fr' }}>
       <div>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24, flexWrap: 'wrap', gap: 12 }}>
           <div>
             <h1 style={{ fontSize: 26, fontFamily: 'var(--font-heading-hy)', color: 'var(--primary)', marginBottom: 4 }}>Services</h1>
             <p style={{ color: 'var(--text-light)', fontSize: 14 }}>Manage your service catalog</p>
@@ -67,8 +67,8 @@ export default function ServicesPage() {
         </div>
 
         {loading ? <p style={{ color: 'var(--text-light)' }}>Loading…</p> : (
-          <div style={{ background: 'white', borderRadius: 12, boxShadow: '0 2px 8px rgba(0,0,0,.06)', overflow: 'hidden' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+          <div className="admin-table-wrap" style={{ background: 'white', borderRadius: 12, boxShadow: '0 2px 8px rgba(0,0,0,.06)' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 560 }}>
               <thead>
                 <tr style={{ borderBottom: '1px solid var(--border)' }}>
                   {['Service', 'Duration', 'Price', 'Actions'].map(h => (
@@ -104,7 +104,7 @@ export default function ServicesPage() {
       </div>
 
       {showForm && (
-        <div style={{ background: 'white', borderRadius: 12, padding: '24px', boxShadow: '0 2px 8px rgba(0,0,0,.06)', height: 'fit-content', position: 'sticky', top: 24 }}>
+        <div className="admin-form-panel" style={{ background: 'white', borderRadius: 12, padding: '24px', boxShadow: '0 2px 8px rgba(0,0,0,.06)', height: 'fit-content', position: 'sticky', top: 24 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 20 }}>
             <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--primary)' }}>{isNew ? 'Add Service' : 'Edit Service'}</h2>
             <button onClick={() => { setEditing(null); setIsNew(false) }} style={{ background: 'none', border: 'none', fontSize: 18, cursor: 'pointer', color: 'var(--text-light)' }}>×</button>
